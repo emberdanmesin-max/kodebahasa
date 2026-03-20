@@ -1,0 +1,2108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kanaan — Bahasa Pemrograman Indonesia</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  :root {
+    --merah: #e63946;
+    --putih: #f1faee;
+    --biru-muda: #a8dadc;
+    --biru: #457b9d;
+    --biru-tua: #1d3557;
+    --hijau: #2dc653;
+    --kuning: #f4a261;
+    --abu: #8d99ae;
+    --bg: #0d1b2a;
+    --bg2: #112240;
+    --bg3: #1a2f4a;
+    --border: #1e3a5f;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--putih);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 2px 20px rgba(0,0,0,0.4);
+  }
+
+  .logo {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--merah); }
+
+  .badge {
+    background: var(--merah);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .tagline {
+    margin-left: auto;
+    color: var(--abu);
+    font-size: 13px;
+  }
+
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 50vw;
+    grid-template-rows: 1fr;
+    gap: 0;
+    flex: 1;
+    height: calc(100vh - 62px);
+  }
+
+  /* Left column wraps editor + output stacked */
+  .left-column {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-right: 1px solid var(--border);
+    grid-column: 2;
+  }
+
+  /* EDITOR */
+  .editor-panel {
+    display: flex;
+    flex-direction: column;
+    flex: 2;
+    min-height: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .panel-header {
+    padding: 10px 18px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--abu);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-merah { background: #ff5f57; }
+  .dot-kuning { background: #febc2e; }
+  .dot-hijau { background: #28c840; }
+
+  #editor {
+    flex: 1;
+    background: var(--bg);
+    color: #cdd6f4;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 16px;
+    border: none;
+    resize: none;
+    outline: none;
+    tab-size: 2;
+    overflow-y: auto;
+  }
+
+  .toolbar {
+    padding: 10px 18px;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-run {
+    background: var(--merah);
+    color: white;
+    border: none;
+    padding: 8px 24px;
+    border-radius: 6px;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-run:hover { background: #c1121f; transform: translateY(-1px); }
+  .btn-run:active { transform: translateY(0); }
+
+  .btn-clear {
+    background: transparent;
+    color: var(--abu);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-clear:hover { border-color: var(--abu); color: var(--putih); }
+
+  .btn-download {
+    background: transparent;
+    color: var(--hijau);
+    border: 1px solid var(--hijau);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .btn-download:hover { background: rgba(45,198,83,0.1); }
+  .btn-download:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .examples-select {
+    margin-left: auto;
+    background: var(--bg3);
+    color: var(--putih);
+    border: 1px solid var(--border);
+    padding: 7px 12px;
+    border-radius: 6px;
+    font-family: 'Sora', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    outline: none;
+  }
+
+  /* OUTPUT */
+  .output-panel {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex: 1;
+    min-height: 0;
+    max-height: 25vh;
+  }
+
+  #output {
+    flex: 1;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    padding: 14px 16px;
+    overflow-y: auto;
+    background: var(--bg);
+    white-space: pre-wrap;
+  }
+
+  .out-line { color: #a6e3a1; }
+  .out-error { color: #f38ba8; }
+  .out-info { color: #89b4fa; }
+  .out-warn { color: #f9e2af; }
+
+  /* SIDEBAR DOCS */
+  .docs-panel {
+    background: var(--bg2);
+    overflow-y: auto;
+    border-right: 1px solid var(--border);
+    padding: 0;
+    min-height: 0;
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .docs-title {
+    padding: 14px 18px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--abu);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--bg2);
+    z-index: 1;
+  }
+
+  .doc-section { border-bottom: 1px solid var(--border); }
+  
+  .doc-section-title {
+    padding: 12px 18px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--biru-muda);
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+  }
+  .doc-section-title:hover { background: var(--bg3); }
+
+  .doc-items { padding: 0 18px 12px; }
+
+  .doc-item {
+    margin-bottom: 12px;
+  }
+
+  .doc-keyword {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--kuning);
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+
+  .doc-desc {
+    font-size: 11px;
+    color: var(--abu);
+    line-height: 1.5;
+  }
+
+  .doc-example {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: #89b4fa;
+    background: var(--bg);
+    border-radius: 4px;
+    padding: 4px 8px;
+    margin-top: 4px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    transition: border-color 0.15s;
+    display: block;
+  }
+  .doc-example:hover { border-color: var(--biru); }
+
+  .input-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .input-overlay.show { display: flex; }
+  .input-box {
+    background: var(--bg2);
+    border: 1px solid var(--biru);
+    border-radius: 10px;
+    padding: 24px;
+    width: 340px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  }
+  .input-box label { font-size: 14px; color: var(--biru-muda); display: block; margin-bottom: 10px; }
+  .input-box input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: var(--putih);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    outline: none;
+    margin-bottom: 14px;
+  }
+  .input-box input:focus { border-color: var(--biru); }
+  .btn-ok {
+    background: var(--biru);
+    color: white;
+    border: none;
+    padding: 9px 24px;
+    border-radius: 6px;
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Kanaan</div>
+  <div class="badge">Beta</div>
+  <div class="tagline">Kanaan — Bahasa Pemrograman Indonesia 🇮🇩</div>
+</header>
+
+<div class="main">
+  <div class="left-column">
+  <!-- EDITOR -->
+  <div class="editor-panel">
+    <div class="panel-header">
+      <div class="dot dot-merah"></div>
+      <div class="dot dot-kuning"></div>
+      <div class="dot dot-hijau"></div>
+      &nbsp; Editor Kode
+    </div>
+    <textarea id="editor" spellcheck="false" placeholder="// Tulis kode Kanaan di sini..."></textarea>
+    <div class="toolbar">
+      <button class="btn-run" onclick="jalankan()">▶ Jalankan</button>
+      <button class="btn-clear" onclick="bersihkanOutput()">Bersihkan Output</button>
+      <button class="btn-download" id="btnDownload" onclick="unduhProgram()" title="Unduh program sebagai paket yang bisa dijalankan offline">⬇ Unduh Program</button>
+      <select class="examples-select" onchange="muatContoh(this.value)">
+        <option value="">— Pilih Contoh —</option>
+        <option value="halo">Halo Dunia</option>
+        <option value="perulangan">Perulangan</option>
+        <option value="kondisi">Kondisi</option>
+        <option value="fungsi">Fungsi</option>
+        <option value="daftar">Daftar (Array)</option>
+        <option value="input">Input Pengguna</option>
+        <option value="kalkulator">Kalkulator</option>
+        <option value="fibonacci">Fibonacci</option>
+        <option value="kelas">Kelas & Objek (OOP)</option>
+        <option value="lengkap">Contoh Lengkap</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- OUTPUT -->
+  <div class="output-panel">
+    <div class="panel-header">📤 Output</div>
+    <div id="output"><span class="out-info">// Output akan muncul di sini setelah kode dijalankan...</span>
+</div>
+  </div>
+
+  </div><!-- end .left-column -->
+
+  <!-- DOCS -->
+  <div class="docs-panel">
+    <div class="docs-title">📖 Referensi Bahasa</div>
+
+    <div class="doc-section">
+      <div class="doc-section-title" onclick="toggleSection(this)">📝 Output & Input <span>▾</span></div>
+      <div class="doc-items">
+        <div class="doc-item">
+          <div class="doc-keyword">tuliskan(...)</div>
+          <div class="doc-desc">Cetak teks ke layar <span style="color:var(--border);font-size:10px">— juga: tulis()</span></div>
+          <code class="doc-example" onclick="sisipKode(this)">tuliskan("Halo Dunia!")</code>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">tanyakan("pesan") lalu simpan di X</div>
+          <div class="doc-desc">Minta input, simpan ke variabel <span style="color:var(--border);font-size:10px">— juga: X = tanyakan()</span></div>
+          <code class="doc-example" onclick="sisipKode(this)">tanyakan("Nama kamu?") lalu simpan di nama
+tuliskan("Halo, " + nama + "!")</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-section">
+      <div class="doc-section-title" onclick="toggleSection(this)">🔢 Variabel <span>▾</span></div>
+      <div class="doc-items">
+        <div class="doc-item">
+          <div class="doc-keyword">variabel = nilai</div>
+          <div class="doc-desc">Membuat dan mengisi variabel</div>
+          <code class="doc-example" onclick="sisipKode(this)">umur = 17
+nama = "Budi"
+tinggi = 1.75</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-section">
+      <div class="doc-section-title" onclick="toggleSection(this)">🔁 Perulangan <span>▾</span></div>
+      <div class="doc-items">
+        <div class="doc-item">
+          <div class="doc-keyword">untuk N kali lakukan:</div>
+          <div class="doc-desc">Ulangi blok sebanyak N kali</div>
+          <code class="doc-example" onclick="sisipKode(this)">untuk 5 kali lakukan:
+  tuliskan("Halo!")</code>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">untuk X dari A sampai B lakukan:</div>
+          <div class="doc-desc">Ulangi dengan variabel counter</div>
+          <code class="doc-example" onclick="sisipKode(this)">untuk i dari 1 sampai 5 lakukan:
+  tuliskan(i)</code>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">saat ... lakukan:</div>
+          <div class="doc-desc">Ulangi selama kondisi benar</div>
+          <code class="doc-example" onclick="sisipKode(this)">x = 0
+saat x < 5 lakukan:
+  tuliskan(x)
+  x = x + 1</code>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">untuk setiap X dalam DAFTAR lakukan:</div>
+          <div class="doc-desc">Iterasi elemen daftar</div>
+          <code class="doc-example" onclick="sisipKode(this)">buah = ["apel", "mangga", "jeruk"]
+untuk setiap b dalam buah lakukan:
+  tuliskan(b)</code>
+        </div>
+        <div class="doc-keyword">hentikan / lanjutkan</div>
+        <div class="doc-desc">break / continue</div>
+      </div>
+    </div>
+
+    <div class="doc-section">
+      <div class="doc-section-title" onclick="toggleSection(this)">❓ Kondisi <span>▾</span></div>
+      <div class="doc-items">
+        <div class="doc-item">
+          <div class="doc-keyword">jika ... maka:</div>
+          <div class="doc-desc">Blok if</div>
+          <code class="doc-example" onclick="sisipKode(this)">jika umur >= 17 maka:
+  tuliskan("Boleh memilih")</code>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">atau jika ... maka:</div>
+          <div class="doc-desc">Blok else if</div>
+          <code class="doc-example" onclick="sisipKode(this)">atau jika umur >= 13 maka:
+  tuliskan("Remaja")</code>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">jika tidak:</div>
+          <div class="doc-desc">Blok else</div>
+          <code class="doc-example" onclick="sisipKode(this)">jika tidak:
+  tuliskan("Anak-anak")</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-section">
+      <div class="doc-section-title" onclick="toggleSection(this)">⚙️ Fungsi <span>▾</span></div>
+      <div class="doc-items">
+        <div class="doc-item">
+          <div class="doc-keyword">fungsi NAMA(params):</div>
+          <div class="doc-desc">Mendefinisikan fungsi</div>
+          <code class="doc-example" onclick="sisipKode(this)">fungsi sapa(nama):
+  tuliskan("Halo, " + nama + "!")
+
+sapa("Andi")</code>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">kembalikan nilai</div>
+          <div class="doc-desc">Return nilai dari fungsi</div>
+          <code class="doc-example" onclick="sisipKode(this)">fungsi kuadrat(x):
+  kembalikan x * x
+
+hasil = kuadrat(4)
+tuliskan(hasil)</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-section">
+      <div class="doc-section-title" onclick="toggleSection(this)">📋 Daftar (Array) <span>▾</span></div>
+      <div class="doc-items">
+        <div class="doc-item">
+          <div class="doc-keyword">daftar = [a, b, c]</div>
+          <div class="doc-desc">Buat daftar</div>
+          <code class="doc-example" onclick="sisipKode(this)">angka = [1, 2, 3, 4, 5]
+tuliskan(angka[0])</code>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">tambahkan(daftar, nilai)</div>
+          <div class="doc-desc">Tambah elemen ke daftar <span style="color:var(--border);font-size:10px">— juga: tambah()</span></div>
+          <code class="doc-example" onclick="sisipKode(this)">tambahkan(angka, 6)
+tuliskan(panjang(angka))</code>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">hapuskan(daftar, indeks)</div>
+          <div class="doc-desc">Hapus elemen dari daftar <span style="color:var(--border);font-size:10px">— juga: hapus()</span></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">panjang(daftar)</div>
+          <div class="doc-desc">Jumlah elemen daftar</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-section">
+      <div class="doc-section-title" onclick="toggleSection(this)">🔣 Operator <span>▾</span></div>
+      <div class="doc-items">
+        <div class="doc-item">
+          <div class="doc-keyword">dan / atau / bukan</div>
+          <div class="doc-desc">and / or / not</div>
+          <code class="doc-example" onclick="sisipKode(this)">jika x > 0 dan x < 10 maka:
+  tuliskan("Satu digit positif")</code>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">sama dengan / tidak sama</div>
+          <div class="doc-desc">== dan !=</div>
+          <code class="doc-example" onclick="sisipKode(this)">jika x sama dengan 5 maka:
+  tuliskan("Lima!")</code>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">benar / salah</div>
+          <div class="doc-desc">true / false</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-section">
+      <div class="doc-section-title" onclick="toggleSection(this)">🧮 Fungsi Matematika <span>▾</span></div>
+      <div class="doc-items">
+        <div class="doc-item">
+          <div class="doc-keyword">bulat(x) / lantai(x) / langit(x)</div>
+          <div class="doc-desc">round / floor / ceil</div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">akar(x) / pangkat(x, n)</div>
+          <div class="doc-desc">sqrt / power</div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">acak() / acakBulat(a, b)</div>
+          <div class="doc-desc">random() / randInt(a,b)</div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">mutlak(x)</div>
+          <div class="doc-desc">abs(x)</div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">maks(a,b) / min(a,b)</div>
+          <div class="doc-desc">max / min</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-section">
+      <div class="doc-section-title" onclick="toggleSection(this)">📝 Fungsi Teks <span>▾</span></div>
+      <div class="doc-items">
+        <div class="doc-item">
+          <div class="doc-keyword">panjangTeks(s)</div>
+          <div class="doc-desc">Panjang string</div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">besarkan(s) / kecilkan(s)</div>
+          <div class="doc-desc">toUpperCase / toLowerCase</div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">ubahKeAngka(s) / ubahKeTeks(n)</div>
+          <div class="doc-desc">parseInt / toString</div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">gantikan(s, lama, baru)</div>
+          <div class="doc-desc">replace(old, new) <span style="color:var(--border);font-size:10px">— juga: ganti()</span></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">pisahkan(s, pemisah)</div>
+          <div class="doc-desc">split(separator) <span style="color:var(--border);font-size:10px">— juga: pisah()</span></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">muncul(s, kata)</div>
+          <div class="doc-desc">includes(str)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-section">
+      <div class="doc-section-title" onclick="toggleSection(this)">🏛 Kelas & Objek <span>▾</span></div>
+      <div class="doc-items">
+        <div class="doc-item">
+          <div class="doc-keyword">cetakbiru NamaKelas:</div>
+          <div class="doc-desc">Definisi kelas <span style="color:var(--border);font-size:10px">— juga: kelas</span></div>
+          <code class="doc-example" onclick="sisipKode(this)">cetakbiru Kucing:
+    fungsi buat(nama):
+        nama.\$nama = nama
+    fungsi bersuara():
+        tuliskan(\$nama + ": Meow!")</code>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">jadikan X obyek dari Kelas(args)</div>
+          <div class="doc-desc">Buat objek baru <span style="color:var(--border);font-size:10px">— juga: jadikan X sebagai Kelas()</span></div>
+          <code class="doc-example" onclick="sisipKode(this)">jadikan kucing1 obyek dari Kucing("Mimi")</code>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">fungsi buat(params):</div>
+          <div class="doc-desc">Inisialisasi objek <span style="color:var(--border);font-size:10px">— juga: fungsi inisialisasi()</span></div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">nama.$prop = nilai</div>
+          <div class="doc-desc">Set properti di dalam buat() — nama = variabel objek</div>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">$prop</div>
+          <div class="doc-desc">Akses properti di dalam metode</div>
+          <code class="doc-example" onclick="sisipKode(this)">tuliskan(\$nama)</code>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">prop objek</div>
+          <div class="doc-desc">Akses properti dari luar</div>
+          <code class="doc-example" onclick="sisipKode(this)">tuliskan(nama kucing1)</code>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">metode(args) objek</div>
+          <div class="doc-desc">Panggil metode <span style="color:var(--border);font-size:10px">— juga: objek.metode()</span></div>
+          <code class="doc-example" onclick="sisipKode(this)">bersuara() kucing1</code>
+        </div>
+        <div class="doc-item">
+          <div class="doc-keyword">X adalah nilai</div>
+          <div class="doc-desc">Assignment <span style="color:var(--border);font-size:10px">— juga: X = nilai</span></div>
+          <code class="doc-example" onclick="sisipKode(this)">umur adalah 17
+nama adalah "Budi"</code>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc-section">
+      <div class="doc-section-title" onclick="toggleSection(this)">💬 Komentar <span>▾</span></div>
+      <div class="doc-items">
+        <div class="doc-item">
+          <div class="doc-keyword">// komentar</div>
+          <div class="doc-desc">Baris komentar, diabaikan oleh interpreter</div>
+          <code class="doc-example" onclick="sisipKode(this)">// Ini adalah komentar</code>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Input overlay -->
+<div class="input-overlay" id="inputOverlay">
+  <div class="input-box">
+    <label id="inputLabel">Masukkan nilai:</label>
+    <input type="text" id="inputField" onkeydown="if(event.key==='Enter') konfirmasiInput()">
+    <button class="btn-ok" onclick="konfirmasiInput()">OK</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  BAHASA KODE — INTERPRETER
+// ============================================================
+
+const CONTOH = {
+halo: `// Halo Dunia!
+tuliskan("Selamat datang di Kanaan!")
+tuliskan("Bahasa pemrograman bahasa Indonesia 🇮🇩")`,
+
+perulangan: `// Contoh perulangan
+tuliskan("=== Perulangan 5 kali ===")
+untuk 5 kali lakukan:
+  tuliskan("Ini perulangan!")
+
+tuliskan("")
+tuliskan("=== Dari 1 sampai 10 ===")
+untuk i dari 1 sampai 10 lakukan:
+  tuliskan("Angka: " + i)
+
+tuliskan("")
+tuliskan("=== Saat/While ===")
+hitung = 0
+saat hitung < 5 lakukan:
+  tuliskan("hitung = " + hitung)
+  hitung = hitung + 1`,
+
+kondisi: `// Contoh kondisi
+nilai = 78
+
+jika nilai >= 90 maka:
+  tuliskan("Nilai A — Sangat Baik!")
+atau jika nilai >= 80 maka:
+  tuliskan("Nilai B — Baik")
+atau jika nilai >= 70 maka:
+  tuliskan("Nilai C — Cukup")
+atau jika nilai >= 60 maka:
+  tuliskan("Nilai D — Perlu usaha lebih")
+jika tidak:
+  tuliskan("Nilai E — Tidak lulus")
+
+// Operator logika
+umur = 20
+punya_ktp = benar
+jika umur >= 17 dan punya_ktp maka:
+  tuliskan("Boleh mendaftar!")`,
+
+fungsi: `// Contoh fungsi
+fungsi sapa(nama):
+  tuliskan("Halo, " + nama + "! Selamat datang.")
+
+fungsi jumlahkan(a, b):
+  kembalikan a + b
+
+fungsi faktorial(n):
+  jika n <= 1 maka:
+    kembalikan 1
+  kembalikan n * faktorial(n - 1)
+
+sapa("Budi")
+sapa("Siti")
+
+hasil = jumlahkan(10, 25)
+tuliskan("10 + 25 = " + hasil)
+
+untuk i dari 1 sampai 8 lakukan:
+  tuliskan(i + "! = " + faktorial(i))`,
+
+daftar: `// Contoh daftar (array)
+buah = ["apel", "mangga", "jeruk", "pisang"]
+
+tuliskan("Daftar buah:")
+untuk setiap b dalam buah lakukan:
+  tuliskan("• " + b)
+
+tuliskan("Jumlah buah: " + panjang(buah))
+
+tambahkan(buah, "durian")
+tuliskan("Setelah ditambah: " + panjang(buah) + " buah")
+
+angka = [5, 3, 8, 1, 9, 2, 7]
+jumlah = 0
+untuk setiap n dalam angka lakukan:
+  jumlah = jumlah + n
+tuliskan("Jumlah angka: " + jumlah)`,
+
+input: `// Contoh input — syntax baru!
+tanyakan("Siapa nama kamu?") lalu simpan di nama
+tuliskan("Halo, " + nama + "!")
+
+tanyakan("Berapa umur kamu?") lalu simpan di umur_teks
+umur = ubahKeAngka(umur_teks)
+
+jika umur >= 17 maka:
+  tuliskan("Kamu sudah dewasa, " + nama + "!")
+jika tidak:
+  sisa = 17 - umur
+  tuliskan("Kamu masih butuh " + sisa + " tahun lagi untuk dewasa.")`,
+
+kalkulator: `// Kalkulator sederhana
+fungsi hitung(a, op, b):
+  jika op sama dengan "+" maka:
+    kembalikan a + b
+  atau jika op sama dengan "-" maka:
+    kembalikan a - b
+  atau jika op sama dengan "*" maka:
+    kembalikan a * b
+  atau jika op sama dengan "/" maka:
+    jika b sama dengan 0 maka:
+      tuliskan("Error: Tidak bisa bagi dengan nol!")
+      kembalikan 0
+    kembalikan a / b
+  kembalikan 0
+
+tanyakan("Masukkan angka pertama:") lalu simpan di a_teks
+tanyakan("Masukkan angka kedua:") lalu simpan di b_teks
+tanyakan("Operator (+, -, *, /):") lalu simpan di op
+
+a = ubahKeAngka(a_teks)
+b = ubahKeAngka(b_teks)
+hasil = hitung(a, op, b)
+tuliskan(a + " " + op + " " + b + " = " + hasil)`,
+
+fibonacci: `// Deret Fibonacci
+fungsi fibonacci(n):
+  jika n <= 0 maka:
+    kembalikan 0
+  jika n sama dengan 1 maka:
+    kembalikan 1
+  kembalikan fibonacci(n-1) + fibonacci(n-2)
+
+tuliskan("Deret Fibonacci (0-12):")
+deret = ""
+untuk i dari 0 sampai 12 lakukan:
+  deret = deret + fibonacci(i)
+  jika i < 12 maka:
+    deret = deret + ", "
+tuliskan(deret)
+
+tuliskan("")
+tuliskan("Fibonacci ke-10: " + fibonacci(10))`,
+
+kelas: `// ============================================
+// Contoh Kelas & Objek (OOP) — Syntax Baru
+// ============================================
+
+cetakbiru Karyawan:
+    fungsi buat(nama, jabatan, gaji):
+        nama.\$nama = nama
+        nama.\$jabatan = jabatan
+        nama.\$gaji = gaji
+
+    fungsi cetakProfil():
+        tuliskan("=== Profil Karyawan ===")
+        tuliskan("Nama    : " + \$nama)
+        tuliskan("Jabatan : " + \$jabatan)
+        tuliskan("Gaji    : Rp " + \$gaji)
+
+    fungsi naikGaji(jumlah):
+        \$gaji = \$gaji + jumlah
+        tuliskan(\$nama + " naik gaji Rp " + jumlah)
+
+// Buat objek — syntax baru
+jadikan budi obyek dari Karyawan("Budi Santoso", "Manager", 5000000)
+jadikan siti obyek dari Karyawan("Siti Rahayu", "Programmer", 4500000)
+
+// Assignment dengan 'adalah'
+bonus adalah 500000
+
+// Akses properti dari luar
+tuliskan(nama budi)
+tuliskan(jabatan siti)
+
+// Panggil metode — syntax baru: metode() objek
+cetakProfil() budi
+tuliskan("")
+cetakProfil() siti
+tuliskan("")
+
+// Metode dengan argumen
+naikGaji(bonus) budi
+tuliskan("Gaji budi sekarang: Rp " + gaji budi)`,
+
+lengkap: `// ============================================
+// Contoh lengkap Kanaan
+// ============================================
+
+fungsi ucapSalam(nama, waktu):
+  jika waktu < 12 maka:
+    kembalikan "Selamat pagi, " + nama + "!"
+  atau jika waktu < 15 maka:
+    kembalikan "Selamat siang, " + nama + "!"
+  atau jika waktu < 19 maka:
+    kembalikan "Selamat sore, " + nama + "!"
+  jika tidak:
+    kembalikan "Selamat malam, " + nama + "!"
+
+fungsi cariMaks(daftar_angka):
+  maks = daftar_angka[0]
+  untuk setiap x dalam daftar_angka lakukan:
+    jika x > maks maka:
+      maks = x
+  kembalikan maks
+
+fungsi rataRata(daftar_angka):
+  jumlah = 0
+  untuk setiap x dalam daftar_angka lakukan:
+    jumlah = jumlah + x
+  kembalikan jumlah / panjang(daftar_angka)
+
+// Program utama
+tuliskan(ucapSalam("Indonesia", 10))
+tuliskan(ucapSalam("Dunia", 20))
+
+nilai_siswa = [85, 92, 78, 95, 88, 72, 90]
+tuliskan("")
+tuliskan("=== Laporan Nilai Siswa ===")
+tuliskan("Jumlah siswa   : " + panjang(nilai_siswa))
+tuliskan("Nilai tertinggi: " + cariMaks(nilai_siswa))
+tuliskan("Rata-rata      : " + bulat(rataRata(nilai_siswa)))
+
+tuliskan("")
+tuliskan("Daftar nilai:")
+nomor = 1
+untuk setiap n dalam nilai_siswa lakukan:
+  jika n >= 90 maka:
+    ket = "A"
+  atau jika n >= 80 maka:
+    ket = "B"
+  atau jika n >= 70 maka:
+    ket = "C"
+  jika tidak:
+    ket = "D"
+  tuliskan("Siswa " + nomor + ": " + n + " (" + ket + ")")
+  nomor = nomor + 1`
+};
+
+// ===================== INTERPRETER CORE =====================
+
+let outputEl = document.getElementById('output');
+let inputResolve = null;
+
+function cetak(msg, tipe = 'out-line') {
+  const span = document.createElement('span');
+  span.className = tipe;
+  span.textContent = String(msg) + '\n';
+  outputEl.appendChild(span);
+  outputEl.scrollTop = outputEl.scrollHeight;
+}
+
+function bersihkanOutput() {
+  outputEl.innerHTML = '';
+}
+
+function tanyaPengguna(prompt) {
+  return new Promise(resolve => {
+    document.getElementById('inputLabel').textContent = prompt || 'Masukkan nilai:';
+    document.getElementById('inputField').value = '';
+    document.getElementById('inputOverlay').classList.add('show');
+    setTimeout(() => document.getElementById('inputField').focus(), 100);
+    inputResolve = resolve;
+  });
+}
+
+function konfirmasiInput() {
+  const val = document.getElementById('inputField').value;
+  document.getElementById('inputOverlay').classList.remove('show');
+  if (inputResolve) { inputResolve(val); inputResolve = null; }
+}
+
+// ==================== TOKENIZER ====================
+
+function tokenize(src) {
+  const tokens = [];
+  let i = 0;
+  while (i < src.length) {
+    // Skip whitespace (non-newline)
+    if (src[i] === ' ' || src[i] === '\t' || src[i] === '\r') { i++; continue; }
+    // Newline
+    if (src[i] === '\n') { tokens.push({ type: 'NEWLINE' }); i++; continue; }
+    // Comment
+    if (src[i] === '/' && src[i+1] === '/') {
+      while (i < src.length && src[i] !== '\n') i++;
+      continue;
+    }
+    // String
+    if (src[i] === '"' || src[i] === "'") {
+      const q = src[i]; i++;
+      let s = '';
+      while (i < src.length && src[i] !== q) {
+        if (src[i] === '\\' && i+1 < src.length) { s += src[i+1]; i += 2; }
+        else { s += src[i]; i++; }
+      }
+      i++; // closing quote
+      tokens.push({ type: 'STRING', val: s });
+      continue;
+    }
+    // Number
+    if (/[0-9]/.test(src[i]) || (src[i] === '-' && /[0-9]/.test(src[i+1]) && (tokens.length === 0 || ['NEWLINE','COLON','COMMA','LPAR','OP'].includes(tokens[tokens.length-1]?.type)))) {
+      let n = '';
+      if (src[i] === '-') { n += '-'; i++; }
+      while (i < src.length && /[0-9.]/.test(src[i])) { n += src[i]; i++; }
+      tokens.push({ type: 'NUMBER', val: parseFloat(n) });
+      continue;
+    }
+    // Operators / punctuation
+    const two = src.slice(i, i+2);
+    if (['>=','<=','!=','=='].includes(two)) { tokens.push({ type: 'OP', val: two }); i += 2; continue; }
+    if ('+-*/%<>=!'.includes(src[i])) { tokens.push({ type: 'OP', val: src[i] }); i++; continue; }
+    if (src[i] === '(') { tokens.push({ type: 'LPAR' }); i++; continue; }
+    if (src[i] === ')') { tokens.push({ type: 'RPAR' }); i++; continue; }
+    if (src[i] === '[') { tokens.push({ type: 'LBRA' }); i++; continue; }
+    if (src[i] === ']') { tokens.push({ type: 'RBRA' }); i++; continue; }
+    if (src[i] === ',') { tokens.push({ type: 'COMMA' }); i++; continue; }
+    if (src[i] === ':') { tokens.push({ type: 'COLON' }); i++; continue; }
+    // Identifier / keyword
+    if (/[a-zA-Z_\u00C0-\u024F\u0400-\u04FF]/.test(src[i])) {
+      let id = '';
+      while (i < src.length && /[a-zA-Z0-9_\u00C0-\u024F\u0400-\u04FF]/.test(src[i])) { id += src[i]; i++; }
+      tokens.push({ type: 'ID', val: id });
+      continue;
+    }
+    i++; // skip unknown
+  }
+  return tokens;
+}
+
+// ==================== PARSER + EVALUATOR ====================
+
+class Interpreter {
+  constructor() {
+    this.env = [{}]; // scope stack
+    this.functions = {};
+    this.builtins = this._builtins();
+  }
+
+  _builtins() {
+    const b = {
+      panjang: (a) => Array.isArray(a) ? a.length : String(a).length,
+      panjangTeks: (a) => String(a).length,
+      bulat: (a) => Math.round(a),
+      lantai: (a) => Math.floor(a),
+      langit: (a) => Math.ceil(a),
+      akar: (a) => Math.sqrt(a),
+      pangkat: (a, n) => Math.pow(a, n),
+      mutlak: (a) => Math.abs(a),
+      maks: (a, b) => Math.max(a, b),
+      min: (a, b) => Math.min(a, b),
+      acak: () => Math.random(),
+      acakBulat: (a, b) => Math.floor(Math.random() * (b - a + 1)) + a,
+      besarkan: (a) => String(a).toUpperCase(),
+      kecilkan: (a) => String(a).toLowerCase(),
+      ubahKeAngka: (a) => { const n = parseFloat(a); return isNaN(n) ? 0 : n; },
+      ubahKeTeks: (a) => String(a),
+      ganti:    (a, lama, baru) => String(a).split(String(lama)).join(String(baru)),
+      pisah:    (a, p) => String(a).split(String(p)),
+      muncul:   (a, b) => String(a).includes(String(b)),
+      tambah:   (arr, val) => { if (Array.isArray(arr)) arr.push(val); return arr; },
+      hapus:    (arr, idx) => { if (Array.isArray(arr)) arr.splice(idx, 1); return arr; },
+    };
+    // ── Alias imperatif (nama baru yang terasa seperti perintah ke komputer) ──
+    b.tuliskan   = b.tulis;          // alias — handler khusus di execStmt
+    b.gantikan   = b.ganti;
+    b.pisahkan   = b.pisah;
+    b.tambahkan  = b.tambah;
+    b.hapuskan   = b.hapus;
+    b.besarkan   = b.besarkan;       // sudah sama
+    b.kecilkan   = b.kecilkan;       // sudah sama
+    return b;
+  }
+
+  getVar(name) {
+    for (let i = this.env.length - 1; i >= 0; i--) {
+      if (name in this.env[i]) return this.env[i][name];
+    }
+    if (name in this.builtins) return this.builtins[name];
+    throw new Error(`Variabel '${name}' tidak ditemukan`);
+  }
+
+  setVar(name, val) {
+    for (let i = this.env.length - 1; i >= 0; i--) {
+      if (name in this.env[i]) { this.env[i][name] = val; return; }
+    }
+    this.env[this.env.length - 1][name] = val;
+  }
+
+  pushScope(init = {}) { this.env.push({ ...init }); }
+  popScope() { this.env.pop(); }
+
+  // Normalize a token stream line into something parseable
+  async runProgram(source) {
+    bersihkanOutput();
+    const lines = source.split('\n');
+    const stmts = this.parse(lines);
+    try {
+      await this.execBlock(stmts);
+    } catch(e) {
+      if (e.type === 'kembalikan') return;
+      cetak('⚠ Kesalahan: ' + e.message, 'out-error');
+    }
+  }
+
+  // ---- PARSE ----
+  parse(lines) {
+    // Build indentation-based AST
+    const stmts = [];
+    let i = 0;
+    while (i < lines.length) {
+      const line = lines[i];
+      const indent = this.getIndent(line);
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith('//')) { i++; continue; }
+
+      const stmt = this.parseLine(trimmed, indent);
+      if (stmt && stmt.body !== undefined) {
+        // collect body
+        const bodyLines = [];
+        i++;
+        while (i < lines.length) {
+          const bl = lines[i];
+          const bi = this.getIndent(bl);
+          const bt = bl.trim();
+          if (!bt || bt.startsWith('//')) { bodyLines.push(''); i++; continue; }
+          if (bi <= indent) break;
+          bodyLines.push(bl.slice(indent + 2)); // dedent
+          i++;
+        }
+        // kelas body: parse metode dengan fungsi parser biasa
+        stmt.body = this.parse(bodyLines);
+        // elseif / else chaining
+        while (i < lines.length) {
+          const cl = lines[i].trim();
+          if (cl.startsWith('atau jika ') && stmt.type === 'jika') {
+            const cStmt = this.parseLine(cl, indent);
+            const cbLines = [];
+            i++;
+            while (i < lines.length) {
+              const bl = lines[i]; const bi = this.getIndent(bl); const bt = bl.trim();
+              if (!bt || bt.startsWith('//')) { cbLines.push(''); i++; continue; }
+              if (bi <= indent) break;
+              cbLines.push(bl.slice(indent + 2)); i++;
+            }
+            cStmt.body = this.parse(cbLines);
+            if (!stmt.elseifs) stmt.elseifs = [];
+            stmt.elseifs.push(cStmt);
+          } else if (cl === 'jika tidak:' && stmt.type === 'jika') {
+            const cbLines = [];
+            i++;
+            while (i < lines.length) {
+              const bl = lines[i]; const bi = this.getIndent(bl); const bt = bl.trim();
+              if (!bt || bt.startsWith('//')) { cbLines.push(''); i++; continue; }
+              if (bi <= indent) break;
+              cbLines.push(bl.slice(indent + 2)); i++;
+            }
+            stmt.elsebody = this.parse(cbLines);
+          } else break;
+        }
+        stmts.push(stmt);
+      } else {
+        if (stmt) stmts.push(stmt);
+        i++;
+      }
+    }
+    return stmts;
+  }
+
+  getIndent(line) {
+    let i = 0;
+    while (i < line.length && (line[i] === ' ' || line[i] === '\t')) i++;
+    return i;
+  }
+
+  parseLine(s, indent) {
+    // Keyword patterns
+    if (!s || s.startsWith('//')) return null;
+
+    let m;
+
+    // ── BARU: cetakbiru NamaKelas: (alias kelas)
+    if ((m = s.match(/^cetakbiru\s+(\w+)\s*:/))) {
+      return { type: 'kelas', name: m[1], body: null };
+    }
+    // kelas NamaKelas: (alias lama tetap jalan)
+    if ((m = s.match(/^kelas\s+(\w+)\s*:/))) {
+      return { type: 'kelas', name: m[1], body: null };
+    }
+
+    // ── BARU: jadikan X obyek dari Kelas(args)
+    if ((m = s.match(/^jadikan\s+(\w+)\s+obyek\s+dari\s+(\w+)\s*\((.*)\)\s*$/))) {
+      return { type: 'jadikan', varname: m[1], kelas: m[2], args: m[3] };
+    }
+    // jadikan X sebagai Kelas(args) (alias lama tetap jalan)
+    if ((m = s.match(/^jadikan\s+(\w+)\s+sebagai\s+(\w+)\s*\((.*)\)\s*$/))) {
+      return { type: 'jadikan', varname: m[1], kelas: m[2], args: m[3] };
+    }
+
+    // ── BARU: metode(args) obj  — pemanggilan metode gaya Indonesia
+    if ((m = s.match(/^(\w+)\s*\((.*)\)\s+(\w+)\s*$/))) {
+      return { type: 'call_method', objname: m[3], method: m[1], args: m[2] };
+    }
+
+    // obj.$prop = val  (di dalam inisialisasi/buat)
+    if ((m = s.match(/^(\w+)\.\$(\w+)\s*=\s*(.+)$/))) {
+      return { type: 'set_prop', objname: m[1], prop: m[2], val: m[3] };
+    }
+    // $prop = val  (shorthand di dalam metode)
+    if ((m = s.match(/^\$(\w+)\s*=\s*(.+)$/))) {
+      return { type: 'set_self_prop', prop: m[1], val: m[2] };
+    }
+    // obj.metode(args) (alias lama tetap jalan)
+    if ((m = s.match(/^(\w+)\.(\w+)\s*\((.*)\)\s*$/))) {
+      return { type: 'call_method', objname: m[1], method: m[2], args: m[3] };
+    }
+
+    // untuk N kali lakukan:
+    if ((m = s.match(/^untuk\s+(.+?)\s+kali\s+lakukan\s*:/))) {
+      return { type: 'ulang', count: m[1], body: null };
+    }
+    // untuk X dari A sampai B lakukan:
+    if ((m = s.match(/^untuk\s+(\w+)\s+dari\s+(.+?)\s+sampai\s+(.+?)\s+lakukan\s*:/))) {
+      return { type: 'dari', varname: m[1], from: m[2], to: m[3], body: null };
+    }
+    // untuk setiap X dalam Y lakukan:
+    if ((m = s.match(/^untuk\s+setiap\s+(\w+)\s+dalam\s+(.+?)\s+lakukan\s*:/))) {
+      return { type: 'foreach', varname: m[1], iterable: m[2], body: null };
+    }
+    // saat ... lakukan:
+    if ((m = s.match(/^saat\s+(.+?)\s+lakukan\s*:/))) {
+      return { type: 'saat', cond: m[1], body: null };
+    }
+    // jika ... maka:
+    if ((m = s.match(/^jika\s+(.+?)\s+maka\s*:/))) {
+      return { type: 'jika', cond: m[1], body: null };
+    }
+    // atau jika ... maka:
+    if ((m = s.match(/^atau\s+jika\s+(.+?)\s+maka\s*:/))) {
+      return { type: 'jika', cond: m[1], body: null };
+    }
+    // fungsi NAME(params): — juga tangkap nama 'buat' sebagai inisialisasi
+    if ((m = s.match(/^fungsi\s+(\w+)\s*\(([^)]*)\)\s*:/))) {
+      return { type: 'fungsi', name: m[1], params: m[2].split(',').map(p => p.trim()).filter(Boolean), body: null };
+    }
+    // kembalikan
+    if ((m = s.match(/^kembalikan\s+(.*)/))) {
+      return { type: 'kembalikan', val: m[1] };
+    }
+    // hentikan / lanjutkan
+    if (s.trim() === 'hentikan') return { type: 'hentikan' };
+    if (s.trim() === 'lanjutkan') return { type: 'lanjutkan' };
+
+    // expr lalu simpan di varname
+    if ((m = s.match(/^(.+?)\s+lalu\s+simpan\s+di\s+(\w+)\s*$/))) {
+      return { type: 'assign', name: m[2], val: m[1] };
+    }
+    // tulis(...) atau tuliskan(...)
+    if ((m = s.match(/^tuliskan?\s*\((.*)\)\s*$/))) {
+      return { type: 'tulis', expr: m[1] };
+    }
+    // ── BARU: assignment dengan 'adalah' — umur adalah 17
+    if ((m = s.match(/^(\w+)\s+adalah\s+(.+)$/))) {
+      return { type: 'assign', name: m[1], val: m[2] };
+    }
+    // assignment with index: arr[i] = val
+    if ((m = s.match(/^(\w+)\s*\[(.+?)\]\s*=\s*(.+)$/))) {
+      return { type: 'assign_idx', name: m[1], idx: m[2], val: m[3] };
+    }
+    // assignment: x = expr (alias lama tetap jalan)
+    if ((m = s.match(/^(\w+)\s*=\s*(.+)$/))) {
+      return { type: 'assign', name: m[1], val: m[2] };
+    }
+    // expression statement (function call, etc.)
+    return { type: 'expr', expr: s };
+  }
+
+  // ---- EXECUTE ----
+  async execBlock(stmts) {
+    for (const stmt of stmts) {
+      await this.execStmt(stmt);
+    }
+  }
+
+  async execStmt(stmt) {
+    if (!stmt) return;
+    switch (stmt.type) {
+      case 'kelas': {
+        // Simpan definisi kelas: { metode: { nama: {params, body} } }
+        const kelasDef = { metode: {} };
+        for (const fn of stmt.body) {
+          if (fn.type === 'fungsi') {
+            kelasDef.metode[fn.name] = { params: fn.params, body: fn.body };
+          }
+        }
+        this.setVar(stmt.name, { __kelas__: true, __def__: kelasDef, __nama__: stmt.name });
+        break;
+      }
+
+      case 'jadikan': {
+        // jadikan budi sebagai Karyawan("Budi","Manager",5000000)
+        const kelasDef = this.getVar(stmt.kelas);
+        if (!kelasDef || !kelasDef.__kelas__) throw new Error(`'${stmt.kelas}' bukan sebuah kelas`);
+        const argsRaw = stmt.args ? this.splitCommaRespecting(stmt.args) : [];
+        const args = [];
+        for (const a of argsRaw) args.push(await this.eval(a.trim()));
+        // Buat objek baru
+        const objek = { __objek__: true, __kelas__: stmt.kelas, __def__: kelasDef.__def__, __props__: {} };
+        // Jalankan inisialisasi jika ada
+        // Jalankan inisialisasi jika ada — cek 'buat' dan 'inisialisasi'
+        const initFn = kelasDef.__def__.metode['buat'] || kelasDef.__def__.metode['inisialisasi'];
+        if (initFn) {
+          const scope = { __self__: objek, __selfname__: stmt.varname };
+          initFn.params.forEach((p, i) => scope[p] = args[i] !== undefined ? args[i] : null);
+          const savedEnv = this.env;
+          this.env = [...this.env.map(e => ({...e})), scope];
+          try { await this.execBlock(initFn.body); }
+          catch(e) { if (e.type !== 'kembalikan') { this.env = savedEnv; throw e; } }
+          this.env = savedEnv;
+        }
+        this.setVar(stmt.varname, objek);
+        break;
+      }
+
+      case 'set_prop': {
+        // nama.$prop = val — di dalam inisialisasi, nama = varname objek
+        const selfScope = this.getSelfScope();
+        if (selfScope) {
+          const obj = selfScope.__self__;
+          const val = await this.eval(stmt.val);
+          obj.__props__[stmt.prop] = val;
+        } else {
+          // fallback: cari objek by name
+          try {
+            const obj = this.getVar(stmt.objname);
+            if (obj && obj.__objek__) {
+              obj.__props__[stmt.prop] = await this.eval(stmt.val);
+            }
+          } catch(e) { throw new Error(`Tidak bisa set properti: ${stmt.objname}.$${stmt.prop}`); }
+        }
+        break;
+      }
+
+      case 'set_self_prop': {
+        // $prop = val — di dalam metode
+        const selfScope = this.getSelfScope();
+        if (!selfScope) throw new Error(`'$${stmt.prop}' hanya bisa dipakai di dalam metode kelas`);
+        selfScope.__self__.__props__[stmt.prop] = await this.eval(stmt.val);
+        break;
+      }
+
+      case 'call_method': {
+        // obj.metode(args)
+        const obj = this.getVar(stmt.objname);
+        if (!obj || !obj.__objek__) throw new Error(`'${stmt.objname}' bukan sebuah objek`);
+        const metode = obj.__def__.metode[stmt.method];
+        if (!metode) throw new Error(`Metode '${stmt.method}' tidak ditemukan di kelas '${obj.__kelas__}'`);
+        const argsRaw = stmt.args ? this.splitCommaRespecting(stmt.args) : [];
+        const args = [];
+        for (const a of argsRaw) args.push(await this.eval(a.trim()));
+        const scope = { __self__: obj, __selfname__: stmt.objname };
+        metode.params.forEach((p, i) => scope[p] = args[i] !== undefined ? args[i] : null);
+        const savedEnv = this.env;
+        this.env = [...this.env.map(e => ({...e})), scope];
+        try { await this.execBlock(metode.body); }
+        catch(e) { if (e.type === 'kembalikan') { this.env = savedEnv; return; } this.env = savedEnv; throw e; }
+        this.env = savedEnv;
+        break;
+      }
+
+      case 'tulis': {
+        const val = await this.eval(stmt.expr);
+        cetak(val === null || val === undefined ? 'kosong' : String(val));
+        break;
+      }
+      case 'assign': {
+        const val = await this.eval(stmt.val);
+        this.setVar(stmt.name, val);
+        break;
+      }
+      case 'assign_idx': {
+        const arr = this.getVar(stmt.name);
+        const idx = await this.eval(stmt.idx);
+        const val = await this.eval(stmt.val);
+        arr[idx] = val;
+        break;
+      }
+      case 'expr': {
+        await this.eval(stmt.expr);
+        break;
+      }
+      case 'kembalikan': {
+        const val = await this.eval(stmt.val);
+        throw { type: 'kembalikan', val };
+      }
+      case 'hentikan': throw { type: 'hentikan' };
+      case 'lanjutkan': throw { type: 'lanjutkan' };
+
+      case 'jika': {
+        const cond = await this.eval(stmt.cond);
+        if (this.truthy(cond)) {
+          this.pushScope(); await this.execBlock(stmt.body); this.popScope();
+        } else if (stmt.elseifs) {
+          let done = false;
+          for (const ei of stmt.elseifs) {
+            const ec = await this.eval(ei.cond);
+            if (this.truthy(ec)) {
+              this.pushScope(); await this.execBlock(ei.body); this.popScope();
+              done = true; break;
+            }
+          }
+          if (!done && stmt.elsebody) {
+            this.pushScope(); await this.execBlock(stmt.elsebody); this.popScope();
+          }
+        } else if (stmt.elsebody) {
+          this.pushScope(); await this.execBlock(stmt.elsebody); this.popScope();
+        }
+        break;
+      }
+
+      case 'ulang': {
+        const n = Math.floor(await this.eval(stmt.count));
+        for (let i = 0; i < n; i++) {
+          try {
+            this.pushScope(); await this.execBlock(stmt.body); this.popScope();
+          } catch(e) {
+            this.popScope();
+            if (e.type === 'hentikan') break;
+            if (e.type === 'lanjutkan') continue;
+            throw e;
+          }
+        }
+        break;
+      }
+
+      case 'dari': {
+        const from = Math.floor(await this.eval(stmt.from));
+        const to = Math.floor(await this.eval(stmt.to));
+        for (let i = from; i <= to; i++) {
+          try {
+            this.pushScope({ [stmt.varname]: i });
+            await this.execBlock(stmt.body);
+            this.popScope();
+          } catch(e) {
+            this.popScope();
+            if (e.type === 'hentikan') break;
+            if (e.type === 'lanjutkan') continue;
+            throw e;
+          }
+        }
+        break;
+      }
+
+      case 'foreach': {
+        const arr = await this.eval(stmt.iterable);
+        const list = Array.isArray(arr) ? arr : [];
+        for (const el of list) {
+          try {
+            this.pushScope({ [stmt.varname]: el });
+            await this.execBlock(stmt.body);
+            this.popScope();
+          } catch(e) {
+            this.popScope();
+            if (e.type === 'hentikan') break;
+            if (e.type === 'lanjutkan') continue;
+            throw e;
+          }
+        }
+        break;
+      }
+
+      case 'saat': {
+        let safety = 0;
+        while (this.truthy(await this.eval(stmt.cond))) {
+          if (++safety > 100000) { cetak('⚠ Perulangan terlalu banyak (batas 100.000)', 'out-warn'); break; }
+          try {
+            this.pushScope(); await this.execBlock(stmt.body); this.popScope();
+          } catch(e) {
+            this.popScope();
+            if (e.type === 'hentikan') break;
+            if (e.type === 'lanjutkan') continue;
+            throw e;
+          }
+        }
+        break;
+      }
+
+      case 'fungsi': {
+        this.functions[stmt.name] = { params: stmt.params, body: stmt.body, closure: [...this.env.map(e => ({...e}))] };
+        break;
+      }
+
+      default:
+        break;
+    }
+  }
+
+  getSelfScope() {
+    for (let i = this.env.length - 1; i >= 0; i--) {
+      if ('__self__' in this.env[i]) return this.env[i];
+    }
+    return null;
+  }
+
+  truthy(v) {
+    if (v === 'benar' || v === true) return true;
+    if (v === 'salah' || v === false || v === null || v === undefined) return false;
+    return Boolean(v);
+  }
+
+  // ---- EXPRESSION EVALUATOR ----
+  async eval(expr) {
+    if (expr === undefined || expr === null) return null;
+    expr = String(expr).trim();
+    if (!expr) return null;
+
+    // $prop — akses properti objek dari dalam metode
+    if (expr.startsWith('$') && /^\$\w+$/.test(expr)) {
+      const selfScope = this.getSelfScope();
+      if (!selfScope) throw new Error(`'${expr}' hanya bisa dipakai di dalam metode kelas`);
+      const prop = expr.slice(1);
+      return selfScope.__self__.__props__[prop] ?? null;
+    }
+
+    // ── BARU: metode(args) obj — sebagai ekspresi yang mengembalikan nilai
+    const methObjMatch = expr.match(/^(\w+)\s*\((.*)\)\s+(\w+)$/s);
+    if (methObjMatch) {
+      const [, method, argsStr, objname] = methObjMatch;
+      try {
+        const obj = this.getVar(objname);
+        if (obj && obj.__objek__) {
+          const metode = obj.__def__.metode[method];
+          if (!metode) throw new Error(`Metode '${method}' tidak ditemukan di kelas '${obj.__kelas__}'`);
+          const argsRaw = argsStr ? this.splitCommaRespecting(argsStr) : [];
+          const args = [];
+          for (const a of argsRaw) args.push(await this.eval(a.trim()));
+          const scope = { __self__: obj, __selfname__: objname };
+          metode.params.forEach((p, i) => scope[p] = args[i] !== undefined ? args[i] : null);
+          const savedEnv = this.env;
+          this.env = [...this.env.map(e => ({...e})), scope];
+          let hasil = null;
+          try { await this.execBlock(metode.body); }
+          catch(e) { if (e.type === 'kembalikan') { hasil = e.val; } else { this.env = savedEnv; throw e; } }
+          this.env = savedEnv;
+          return hasil;
+        }
+      } catch(e) { if (e.message && e.message.includes('tidak ditemukan')) throw e; }
+    }
+
+    // prop obj — akses properti dari luar: tuliskan(nama budi)
+    const propObjMatch = expr.match(/^(\w+)\s+(\w+)$/);
+    if (propObjMatch) {
+      const [, prop, objname] = propObjMatch;
+      try {
+        const obj = this.getVar(objname);
+        if (obj && obj.__objek__ && prop in obj.__props__) {
+          return obj.__props__[prop];
+        }
+      } catch(e) { /* bukan akses properti, lanjut */ }
+    }
+
+    // obj.metode() sebagai ekspresi (kembalikan nilai)
+    const methExprMatch = expr.match(/^(\w+)\.(\w+)\s*\((.*)\)$/s);
+    if (methExprMatch) {
+      const [, objname, method, argsStr] = methExprMatch;
+      try {
+        const obj = this.getVar(objname);
+        if (obj && obj.__objek__) {
+          const metode = obj.__def__.metode[method];
+          if (!metode) throw new Error(`Metode '${method}' tidak ditemukan di kelas '${obj.__kelas__}'`);
+          const argsRaw = argsStr ? this.splitCommaRespecting(argsStr) : [];
+          const args = [];
+          for (const a of argsRaw) args.push(await this.eval(a.trim()));
+          const scope = { __self__: obj, __selfname__: objname };
+          metode.params.forEach((p, i) => scope[p] = args[i] !== undefined ? args[i] : null);
+          const savedEnv = this.env;
+          this.env = [...this.env.map(e => ({...e})), scope];
+          let hasil = null;
+          try { await this.execBlock(metode.body); }
+          catch(e) { if (e.type === 'kembalikan') { hasil = e.val; } else { this.env = savedEnv; throw e; } }
+          this.env = savedEnv;
+          return hasil;
+        }
+      } catch(e) { if (e.message && !e.message.includes('bukan')) throw e; }
+    }
+
+    // benar/salah
+    if (expr === 'benar') return true;
+    if (expr === 'salah') return false;
+    if (expr === 'kosong') return null;
+
+    // String literal
+    if ((expr[0] === '"' && expr[expr.length-1] === '"') ||
+        (expr[0] === "'" && expr[expr.length-1] === "'")) {
+      return expr.slice(1, -1);
+    }
+
+    // Number literal
+    if (/^-?\d+(\.\d+)?$/.test(expr)) return parseFloat(expr);
+
+    // Array literal
+    if (expr[0] === '[') {
+      const inner = expr.slice(1, -1).trim();
+      if (!inner) return [];
+      const parts = this.splitCommaRespecting(inner);
+      const arr = [];
+      for (const p of parts) arr.push(await this.eval(p.trim()));
+      return arr;
+    }
+
+    // Parenthesized expression
+    if (expr[0] === '(') {
+      const inner = expr.slice(1, -1);
+      return await this.eval(inner);
+    }
+
+    // "sama dengan" → == dan "tidak sama" → !=
+    // "adalah" sebagai assignment sudah ditangani parseLine, di sini tangani jika muncul di ekspresi
+    expr = expr.replace(/\bsama dengan\b/g, '==').replace(/\btidak sama\b/g, '!=');
+
+    // "dan" "atau" "bukan"
+    // Split by "dan" first (lower precedence after || in JS)
+    const orParts = this.splitByKeyword(expr, ' atau ');
+    if (orParts.length > 1) {
+      let result = await this.eval(orParts[0]);
+      for (let i = 1; i < orParts.length; i++) {
+        if (this.truthy(result)) return true;
+        result = await this.eval(orParts[i]);
+      }
+      return this.truthy(result);
+    }
+
+    const andParts = this.splitByKeyword(expr, ' dan ');
+    if (andParts.length > 1) {
+      let result = await this.eval(andParts[0]);
+      for (let i = 1; i < andParts.length; i++) {
+        if (!this.truthy(result)) return false;
+        result = await this.eval(andParts[i]);
+      }
+      return this.truthy(result);
+    }
+
+    // "bukan"
+    if (expr.startsWith('bukan ')) {
+      return !this.truthy(await this.eval(expr.slice(6)));
+    }
+
+    // Binary ops: string concat and comparison and arithmetic
+    // We parse right-to-left for +, then comparison
+    const ops = ['!=','==','>=','<=','>','<','+','-','*','/','%'];
+    // Try splitting on operators (respecting parens/strings)
+    for (const op of ops) {
+      const idx = this.findOperator(expr, op);
+      if (idx !== -1) {
+        const left = await this.eval(expr.slice(0, idx).trim());
+        const right = await this.eval(expr.slice(idx + op.length).trim());
+        switch(op) {
+          case '+': return (typeof left === 'number' && typeof right === 'number') ? left + right : String(left) + String(right);
+          case '-': return left - right;
+          case '*': return left * right;
+          case '/': return right !== 0 ? left / right : (cetak('⚠ Bagi nol!', 'out-warn'), 0);
+          case '%': return left % right;
+          case '==': return left == right;
+          case '!=': return left != right;
+          case '>=': return left >= right;
+          case '<=': return left <= right;
+          case '>': return left > right;
+          case '<': return left < right;
+        }
+      }
+    }
+
+    // Unary minus
+    if (expr[0] === '-') {
+      return -(await this.eval(expr.slice(1)));
+    }
+
+    // Function call: name(args)
+    const callMatch = expr.match(/^(\w+)\s*\((.*)?\)$/s);
+    if (callMatch) {
+      const fname = callMatch[1];
+      const argsRaw = callMatch[2] ? this.splitCommaRespecting(callMatch[2]) : [];
+      const args = [];
+      for (const a of argsRaw) args.push(await this.eval(a.trim()));
+
+      // tanya() / tanyakan() — special async input
+      if (fname === 'tanya' || fname === 'tanyakan') {
+        return await tanyaPengguna(args[0] || 'Masukkan nilai:');
+      }
+      // tulis() / tuliskan() dipanggil sebagai ekspresi (bukan statement)
+      if (fname === 'tulis' || fname === 'tuliskan') {
+        const val = args[0];
+        cetak(val === null || val === undefined ? 'kosong' : String(val));
+        return null;
+      }
+      // builtins
+      if (fname in this.builtins) return this.builtins[fname](...args);
+      // user functions
+      if (fname in this.functions) {
+        const fn = this.functions[fname];
+        const scope = {};
+        fn.params.forEach((p, i) => scope[p] = args[i] !== undefined ? args[i] : null);
+        // Execute function
+        const savedEnv = this.env;
+        this.env = [...fn.closure.map(e => ({...e})), scope];
+        try {
+          await this.execBlock(fn.body);
+        } catch(e) {
+          if (e.type === 'kembalikan') { this.env = savedEnv; return e.val; }
+          this.env = savedEnv; throw e;
+        }
+        this.env = savedEnv;
+        return null;
+      }
+      throw new Error(`Fungsi '${fname}' tidak ditemukan`);
+    }
+
+    // Index access: arr[idx]
+    const idxMatch = expr.match(/^(\w+)\[(.+?)\]$/);
+    if (idxMatch) {
+      const arr = this.getVar(idxMatch[1]);
+      const idx = await this.eval(idxMatch[2]);
+      return Array.isArray(arr) ? arr[idx] : null;
+    }
+
+    // Identifier
+    if (/^\w+$/.test(expr)) {
+      try { return this.getVar(expr); }
+      catch(e) { throw e; }
+    }
+
+    throw new Error(`Tidak bisa mengevaluasi: '${expr}'`);
+  }
+
+  splitCommaRespecting(s) {
+    const parts = [];
+    let depth = 0; let cur = ''; let inStr = false; let strChar = '';
+    for (let i = 0; i < s.length; i++) {
+      const c = s[i];
+      if (inStr) { cur += c; if (c === strChar) inStr = false; continue; }
+      if (c === '"' || c === "'") { inStr = true; strChar = c; cur += c; continue; }
+      if (c === '(' || c === '[') { depth++; cur += c; continue; }
+      if (c === ')' || c === ']') { depth--; cur += c; continue; }
+      if (c === ',' && depth === 0) { parts.push(cur.trim()); cur = ''; continue; }
+      cur += c;
+    }
+    if (cur.trim()) parts.push(cur.trim());
+    return parts;
+  }
+
+  splitByKeyword(s, kw) {
+    const parts = [];
+    let cur = ''; let depth = 0; let inStr = false; let strChar = '';
+    for (let i = 0; i < s.length; i++) {
+      const c = s[i];
+      if (inStr) { cur += c; if (c === strChar) inStr = false; continue; }
+      if (c === '"' || c === "'") { inStr = true; strChar = c; cur += c; continue; }
+      if (c === '(' || c === '[') { depth++; cur += c; continue; }
+      if (c === ')' || c === ']') { depth--; cur += c; continue; }
+      if (depth === 0 && s.slice(i).startsWith(kw)) {
+        parts.push(cur.trim()); cur = ''; i += kw.length - 1; continue;
+      }
+      cur += c;
+    }
+    if (cur.trim()) parts.push(cur.trim());
+    return parts;
+  }
+
+  findOperator(s, op) {
+    let depth = 0; let inStr = false; let strChar = '';
+    // For non-'+' operators search L→R; for '+' search R→L to get proper assoc
+    const start = 0; const step = 1;
+    for (let i = start; i >= 0 && i <= s.length - op.length; i += step) {
+      const c = s[i];
+      if (inStr) { if (c === strChar) inStr = false; continue; }
+      if (c === '"' || c === "'") { inStr = true; strChar = c; continue; }
+      if (c === '(' || c === '[') { depth++; continue; }
+      if (c === ')' || c === ']') { depth--; continue; }
+      if (depth === 0 && s.slice(i, i+op.length) === op) {
+        // Make sure it's not part of a longer operator
+        const before = s[i-1];
+        const after = s[i+op.length];
+        if (op === '>' && (before === '=' || after === '=')) continue;
+        if (op === '<' && (before === '=' || after === '=')) continue;
+        if (op === '=' && (before === '=' || before === '!' || before === '>' || before === '<' || after === '=')) continue;
+        if (op === '!' && after === '=') continue;
+        return i;
+      }
+    }
+    return -1;
+  }
+}
+
+// ===================== UI =====================
+
+let interpreter;
+
+async function jalankan() {
+  interpreter = new Interpreter();
+  const code = document.getElementById('editor').value;
+  bersihkanOutput();
+  if (!code.trim()) {
+    cetak('// Tidak ada kode untuk dijalankan', 'out-info');
+    return;
+  }
+  cetak('▶ Menjalankan program...', 'out-info');
+  cetak('', 'out-info');
+  try {
+    await interpreter.runProgram(code);
+    cetak('', 'out-info');
+    cetak('✓ Program selesai', 'out-info');
+  } catch(e) {
+    cetak('⚠ Kesalahan: ' + e.message, 'out-error');
+  }
+}
+
+function muatContoh(key) {
+  if (!key) return;
+  document.getElementById('editor').value = CONTOH[key] || '';
+  document.querySelector('.examples-select').value = '';
+  bersihkanOutput();
+}
+
+function sisipKode(el) {
+  const editor = document.getElementById('editor');
+  const txt = el.textContent;
+  const pos = editor.selectionStart;
+  const before = editor.value.slice(0, pos);
+  const after = editor.value.slice(pos);
+  editor.value = before + (before && !before.endsWith('\n') ? '\n' : '') + txt + '\n' + after;
+  editor.focus();
+}
+
+function toggleSection(el) {
+  const items = el.nextElementSibling;
+  const arrow = el.querySelector('span');
+  if (items.style.display === 'none') {
+    items.style.display = '';
+    arrow.textContent = '▾';
+  } else {
+    items.style.display = 'none';
+    arrow.textContent = '▸';
+  }
+}
+
+// Load default example
+window.onload = () => {
+  document.getElementById('editor').value = CONTOH.lengkap;
+};
+
+// Keyboard shortcut: Ctrl+Enter to run
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); jalankan(); }
+});
+
+// ============================================================
+//  UNDUH PROGRAM — generate .zip berisi interpreter + kode
+// ============================================================
+async function unduhProgram() {
+  const kode = document.getElementById('editor').value.trim();
+  if (!kode) {
+    alert('Editor masih kosong! Tulis kode dulu sebelum mengunduh.');
+    return;
+  }
+
+  const btn = document.getElementById('btnDownload');
+  btn.disabled = true;
+  btn.textContent = '⏳ Menyiapkan...';
+
+  // Ambil nama program dari baris komentar pertama atau default
+  let namaProg = 'ProgramSaya';
+  const baris1 = kode.split('\n')[0];
+  const komentarMatch = baris1.match(/^\/\/\s*(.+)/);
+  if (komentarMatch) namaProg = komentarMatch[1].trim().replace(/[^a-zA-Z0-9_\- ]/g,'').trim().replace(/ /g,'_') || 'ProgramSaya';
+
+  // ── 1. File kode sumber (.bk) ──
+  const fileBk = kode;
+
+  // ── 2. Script jalankan.bat (Windows) ──
+  const fileBat = `@echo off
+title ${namaProg} — Kanaan
+echo Membuka program ${namaProg}...
+start "" "${namaProg}.html"
+`;
+
+  // ── 3. Script jalankan.sh (Mac/Linux) ──
+  const fileSh = `#!/bin/bash
+echo "Membuka program ${namaProg}..."
+if command -v xdg-open &> /dev/null; then
+  xdg-open "${namaProg}.html"
+elif command -v open &> /dev/null; then
+  open "${namaProg}.html"
+else
+  echo "Buka file ${namaProg}.html di browser kamu."
+fi
+`;
+
+  // ── 4. README.txt ──
+  const fileReadme = `===================================
+  ${namaProg}
+  Dibuat dengan Kanaan 🇮🇩
+===================================
+
+CARA MENJALANKAN:
+-----------------
+Windows : Klik dua kali jalankan.bat
+          ATAU buka ${namaProg}.html di browser
+
+Mac/Linux: Jalankan ./jalankan.sh di terminal
+           ATAU buka ${namaProg}.html di browser
+
+ISI PAKET:
+----------
+${namaProg}.html  → Program lengkap (bisa dibuka langsung di browser)
+${namaProg}.bk    → Kode sumber Kanaan
+jalankan.bat      → Pintasan untuk Windows
+jalankan.sh       → Pintasan untuk Mac/Linux
+README.txt        → File ini
+
+Dibuat dengan Kanaan — https://kanaan.id
+`;
+
+  // ── 5. HTML interpreter mandiri (standalone) ──
+  // Sematkan seluruh interpreter + kode pengguna dalam satu file HTML
+  const interpreterHTML = buatHTMLMandiri(kode, namaProg);
+
+  try {
+    const zip = new JSZip();
+    const folder = zip.folder(namaProg);
+    folder.file(`${namaProg}.bk`, fileBk);
+    folder.file(`${namaProg}.html`, interpreterHTML);
+    folder.file('jalankan.bat', fileBat);
+    folder.file('jalankan.sh', fileSh);
+    folder.file('README.txt', fileReadme);
+
+    const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${namaProg}.zip`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    btn.textContent = '✓ Terunduh!';
+    btn.style.color = 'var(--hijau)';
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = '⬇ Unduh Program';
+      btn.style.color = '';
+    }, 2500);
+  } catch(e) {
+    alert('Gagal membuat zip: ' + e.message);
+    btn.disabled = false;
+    btn.textContent = '⬇ Unduh Program';
+  }
+}
+
+function buatHTMLMandiri(kode, namaProg) {
+  // Escape kode untuk ditanam di dalam JS string
+  const kodeEscaped = kode.replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
+
+  return `<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${namaProg} — Kanaan</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Sora',sans-serif;background:#0d1b2a;color:#f1faee;min-height:100vh;display:flex;flex-direction:column;}
+header{padding:14px 24px;background:#112240;border-bottom:1px solid #1e3a5f;display:flex;align-items:center;gap:12px;}
+.logo{font-size:18px;font-weight:800;}.logo span{color:#e63946;}
+.prog-name{font-size:13px;color:#8d99ae;}
+.body{display:grid;grid-template-columns:1fr 1fr;flex:1;height:calc(100vh - 52px);}
+.pane{display:flex;flex-direction:column;}
+.pane-header{padding:8px 16px;background:#1a2f4a;border-bottom:1px solid #1e3a5f;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#8d99ae;display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.dot{width:7px;height:7px;border-radius:50%;}
+textarea{flex:1;background:#0d1b2a;color:#cdd6f4;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6;padding:16px;border:none;resize:none;outline:none;border-right:1px solid #1e3a5f;}
+.toolbar{padding:8px 16px;background:#112240;border-top:1px solid #1e3a5f;border-right:1px solid #1e3a5f;display:flex;gap:8px;}
+.btn-run{background:#e63946;color:#fff;border:none;padding:7px 20px;border-radius:5px;font-family:'Sora',sans-serif;font-size:12px;font-weight:700;cursor:pointer;}
+.btn-run:hover{background:#c1121f;}
+.btn-clear{background:transparent;color:#8d99ae;border:1px solid #1e3a5f;padding:7px 14px;border-radius:5px;font-family:'Sora',sans-serif;font-size:12px;cursor:pointer;}
+#output{flex:1;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8;padding:16px;overflow-y:auto;background:#0d1b2a;white-space:pre-wrap;}
+.out-line{color:#a6e3a1;}.out-error{color:#f38ba8;}.out-info{color:#89b4fa;}.out-warn{color:#f9e2af;}
+.input-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center;}
+.input-overlay.show{display:flex;}
+.input-box{background:#112240;border:1px solid #457b9d;border-radius:10px;padding:24px;width:320px;}
+.input-box label{font-size:14px;color:#a8dadc;display:block;margin-bottom:10px;}
+.input-box input{width:100%;background:#0d1b2a;border:1px solid #1e3a5f;border-radius:6px;padding:9px 12px;color:#f1faee;font-family:'JetBrains Mono',monospace;font-size:13px;outline:none;margin-bottom:12px;}
+.btn-ok{background:#457b9d;color:#fff;border:none;padding:8px;border-radius:5px;font-family:'Sora',sans-serif;font-weight:700;cursor:pointer;width:100%;}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Kanaan</div>
+  <div class="prog-name">📄 ${namaProg}</div>
+</header>
+<div class="body">
+  <div class="pane">
+    <div class="pane-header"><div class="dot" style="background:#ff5f57"></div><div class="dot" style="background:#febc2e"></div><div class="dot" style="background:#28c840"></div>&nbsp;Editor Kode</div>
+    <textarea id="editor" spellcheck="false"></textarea>
+    <div class="toolbar">
+      <button class="btn-run" onclick="jalankan()">▶ Jalankan</button>
+      <button class="btn-clear" onclick="document.getElementById('output').innerHTML=''">Bersihkan</button>
+    </div>
+  </div>
+  <div class="pane">
+    <div class="pane-header">📤 Output</div>
+    <div id="output"><span class="out-info">// Klik Jalankan untuk memulai...</span>
+</div>
+  </div>
+</div>
+<div class="input-overlay" id="inputOverlay">
+  <div class="input-box">
+    <label id="inputLabel">Masukkan nilai:</label>
+    <input type="text" id="inputField" onkeydown="if(event.key==='Enter') konfirmasiInput()">
+    <button class="btn-ok" onclick="konfirmasiInput()">OK</button>
+  </div>
+</div>
+<script>
+// Kode program
+const KODE_PROGRAM = \`${kodeEscaped}\`;
+
+// ── Interpreter Kanaan (disematkan) ──
+let outputEl=document.getElementById('output');
+let inputResolve=null;
+function cetak(msg,tipe='out-line'){const s=document.createElement('span');s.className=tipe;s.textContent=String(msg)+'\\n';outputEl.appendChild(s);outputEl.scrollTop=outputEl.scrollHeight;}
+function tanyaPengguna(prompt){return new Promise(r=>{document.getElementById('inputLabel').textContent=prompt||'Masukkan nilai:';document.getElementById('inputField').value='';document.getElementById('inputOverlay').classList.add('show');setTimeout(()=>document.getElementById('inputField').focus(),100);inputResolve=r;});}
+function konfirmasiInput(){const v=document.getElementById('inputField').value;document.getElementById('inputOverlay').classList.remove('show');if(inputResolve){inputResolve(v);inputResolve=null;}}
+
+class Interpreter{
+  constructor(){this.env=[{}];this.functions={};this.builtins=this._builtins();}
+  _builtins(){const b={panjang:(a)=>Array.isArray(a)?a.length:String(a).length,panjangTeks:(a)=>String(a).length,bulat:(a)=>Math.round(a),lantai:(a)=>Math.floor(a),langit:(a)=>Math.ceil(a),akar:(a)=>Math.sqrt(a),pangkat:(a,n)=>Math.pow(a,n),mutlak:(a)=>Math.abs(a),maks:(a,b)=>Math.max(a,b),min:(a,b)=>Math.min(a,b),acak:()=>Math.random(),acakBulat:(a,b)=>Math.floor(Math.random()*(b-a+1))+a,besarkan:(a)=>String(a).toUpperCase(),kecilkan:(a)=>String(a).toLowerCase(),ubahKeAngka:(a)=>{const n=parseFloat(a);return isNaN(n)?0:n;},ubahKeTeks:(a)=>String(a),ganti:(a,l,br)=>String(a).split(String(l)).join(String(br)),pisah:(a,p)=>String(a).split(String(p)),muncul:(a,b)=>String(a).includes(String(b)),tambah:(arr,val)=>{if(Array.isArray(arr))arr.push(val);return arr;},hapus:(arr,idx)=>{if(Array.isArray(arr))arr.splice(idx,1);return arr;},};b.tuliskan=b.tulis;b.gantikan=b.ganti;b.pisahkan=b.pisah;b.tambahkan=b.tambah;b.hapuskan=b.hapus;return b;}
+  getVar(n){for(let i=this.env.length-1;i>=0;i--)if(n in this.env[i])return this.env[i][n];if(n in this.builtins)return this.builtins[n];throw new Error(\`Variabel '\${n}' tidak ditemukan\`);}
+  setVar(n,v){for(let i=this.env.length-1;i>=0;i--)if(n in this.env[i]){this.env[i][n]=v;return;}this.env[this.env.length-1][n]=v;}
+  pushScope(i={}){this.env.push({...i});}popScope(){this.env.pop();}
+  async runProgram(src){outputEl.innerHTML='';const lines=src.split('\\n');const stmts=this.parse(lines);try{await this.execBlock(stmts);}catch(e){if(e.type==='kembalikan')return;cetak('⚠ Kesalahan: '+e.message,'out-error');}}
+  parse(lines){const stmts=[];let i=0;while(i<lines.length){const line=lines[i];const indent=this.getIndent(line);const trimmed=line.trim();if(!trimmed||trimmed.startsWith('//')){i++;continue;}const stmt=this.parseLine(trimmed,indent);if(stmt&&stmt.body!==undefined){const bodyLines=[];i++;while(i<lines.length){const bl=lines[i];const bi=this.getIndent(bl);const bt=bl.trim();if(!bt||bt.startsWith('//')){bodyLines.push('');i++;continue;}if(bi<=indent)break;bodyLines.push(bl.slice(indent+2));i++;}stmt.body=this.parse(bodyLines);while(i<lines.length){const cl=lines[i].trim();if(cl.startsWith('atau jika ')&&stmt.type==='jika'){const cS=this.parseLine(cl,indent);const cb=[];i++;while(i<lines.length){const bl=lines[i];const bi=this.getIndent(bl);const bt=bl.trim();if(!bt||bt.startsWith('//')){cb.push('');i++;continue;}if(bi<=indent)break;cb.push(bl.slice(indent+2));i++;}cS.body=this.parse(cb);if(!stmt.elseifs)stmt.elseifs=[];stmt.elseifs.push(cS);}else if(cl==='jika tidak:'&&stmt.type==='jika'){const cb=[];i++;while(i<lines.length){const bl=lines[i];const bi=this.getIndent(bl);const bt=bl.trim();if(!bt||bt.startsWith('//')){cb.push('');i++;continue;}if(bi<=indent)break;cb.push(bl.slice(indent+2));i++;}stmt.elsebody=this.parse(cb);}else break;}stmts.push(stmt);}else{if(stmt)stmts.push(stmt);i++;}}return stmts;}
+  getIndent(l){let i=0;while(i<l.length&&(l[i]===' '||l[i]==='\\t'))i++;return i;}
+  parseLine(s){if(!s||s.startsWith('//'))return null;let m;
+    if((m=s.match(/^(.+?)\\s+lalu\\s+simpan\\s+di\\s+(\\w+)\\s*$/)))return{type:'assign',name:m[2],val:m[1]};
+    if((m=s.match(/^untuk\\s+(.+?)\\s+kali\\s+lakukan\\s*:/)))return{type:'ulang',count:m[1],body:null};
+    if((m=s.match(/^untuk\\s+(\\w+)\\s+dari\\s+(.+?)\\s+sampai\\s+(.+?)\\s+lakukan\\s*:/)))return{type:'dari',varname:m[1],from:m[2],to:m[3],body:null};
+    if((m=s.match(/^untuk\\s+setiap\\s+(\\w+)\\s+dalam\\s+(.+?)\\s+lakukan\\s*:/)))return{type:'foreach',varname:m[1],iterable:m[2],body:null};
+    if((m=s.match(/^saat\\s+(.+?)\\s+lakukan\\s*:/)))return{type:'saat',cond:m[1],body:null};
+    if((m=s.match(/^jika\\s+(.+?)\\s+maka\\s*:/)))return{type:'jika',cond:m[1],body:null};
+    if((m=s.match(/^atau\\s+jika\\s+(.+?)\\s+maka\\s*:/)))return{type:'jika',cond:m[1],body:null};
+    if((m=s.match(/^fungsi\\s+(\\w+)\\s*\\(([^)]*)\\)\\s*:/)))return{type:'fungsi',name:m[1],params:m[2].split(',').map(p=>p.trim()).filter(Boolean),body:null};
+    if((m=s.match(/^kembalikan\\s+(.*)/)))return{type:'kembalikan',val:m[1]};
+    if(s.trim()==='hentikan')return{type:'hentikan'};
+    if(s.trim()==='lanjutkan')return{type:'lanjutkan'};
+    if((m=s.match(/^tuliskan?\\s*\\((.*)\\)\\s*$/)))return{type:'tulis',expr:m[1]};
+    if((m=s.match(/^(\\w+)\\s*\\[(.+?)\\]\\s*=\\s*(.+)$/)))return{type:'assign_idx',name:m[1],idx:m[2],val:m[3]};
+    if((m=s.match(/^(\\w+)\\s*=\\s*(.+)$/)))return{type:'assign',name:m[1],val:m[2]};
+    return{type:'expr',expr:s};}
+  async execBlock(stmts){for(const s of stmts)await this.execStmt(s);}
+  async execStmt(stmt){if(!stmt)return;switch(stmt.type){
+    case 'tulis':{const v=await this.eval(stmt.expr);cetak(v===null||v===undefined?'kosong':String(v));break;}
+    case 'assign':{const v=await this.eval(stmt.val);this.setVar(stmt.name,v);break;}
+    case 'assign_idx':{const arr=this.getVar(stmt.name);const idx=await this.eval(stmt.idx);arr[idx]=await this.eval(stmt.val);break;}
+    case 'expr':{await this.eval(stmt.expr);break;}
+    case 'kembalikan':{const v=await this.eval(stmt.val);throw{type:'kembalikan',val:v};}
+    case 'hentikan':throw{type:'hentikan'};
+    case 'lanjutkan':throw{type:'lanjutkan'};
+    case 'jika':{const c=await this.eval(stmt.cond);if(this.truthy(c)){this.pushScope();await this.execBlock(stmt.body);this.popScope();}else if(stmt.elseifs){let done=false;for(const ei of stmt.elseifs){if(this.truthy(await this.eval(ei.cond))){this.pushScope();await this.execBlock(ei.body);this.popScope();done=true;break;}}if(!done&&stmt.elsebody){this.pushScope();await this.execBlock(stmt.elsebody);this.popScope();}}else if(stmt.elsebody){this.pushScope();await this.execBlock(stmt.elsebody);this.popScope();}break;}
+    case 'ulang':{const n=Math.floor(await this.eval(stmt.count));for(let i=0;i<n;i++){try{this.pushScope();await this.execBlock(stmt.body);this.popScope();}catch(e){this.popScope();if(e.type==='hentikan')break;if(e.type==='lanjutkan')continue;throw e;}}break;}
+    case 'dari':{const f=Math.floor(await this.eval(stmt.from)),t=Math.floor(await this.eval(stmt.to));for(let i=f;i<=t;i++){try{this.pushScope({[stmt.varname]:i});await this.execBlock(stmt.body);this.popScope();}catch(e){this.popScope();if(e.type==='hentikan')break;if(e.type==='lanjutkan')continue;throw e;}}break;}
+    case 'foreach':{const arr=await this.eval(stmt.iterable);for(const el of(Array.isArray(arr)?arr:[])){try{this.pushScope({[stmt.varname]:el});await this.execBlock(stmt.body);this.popScope();}catch(e){this.popScope();if(e.type==='hentikan')break;if(e.type==='lanjutkan')continue;throw e;}}break;}
+    case 'saat':{let s=0;while(this.truthy(await this.eval(stmt.cond))){if(++s>100000){cetak('⚠ Perulangan terlalu banyak','out-warn');break;}try{this.pushScope();await this.execBlock(stmt.body);this.popScope();}catch(e){this.popScope();if(e.type==='hentikan')break;if(e.type==='lanjutkan')continue;throw e;}}break;}
+    case 'fungsi':{this.functions[stmt.name]={params:stmt.params,body:stmt.body,closure:[...this.env.map(e=>({...e}))]};break;}}}
+  truthy(v){if(v==='benar'||v===true)return true;if(v==='salah'||v===false||v===null||v===undefined)return false;return Boolean(v);}
+  async eval(expr){if(expr===undefined||expr===null)return null;expr=String(expr).trim();if(!expr)return null;
+    if(expr==='benar')return true;if(expr==='salah')return false;if(expr==='kosong')return null;
+    if((expr[0]==='"'&&expr[expr.length-1]==='"')||(expr[0]==="'"&&expr[expr.length-1]==="'"))return expr.slice(1,-1);
+    if(/^-?\\d+(\\.\\d+)?$/.test(expr))return parseFloat(expr);
+    if(expr[0]==='['){const inner=expr.slice(1,-1).trim();if(!inner)return[];const parts=this.splitCommaRespecting(inner);const arr=[];for(const p of parts)arr.push(await this.eval(p.trim()));return arr;}
+    if(expr[0]==='(')return await this.eval(expr.slice(1,-1));
+    expr=expr.replace(/\\bsama dengan\\b/g,'==').replace(/\\btidak sama\\b/g,'!=');
+    const orP=this.splitByKeyword(expr,' atau ');if(orP.length>1){let r=await this.eval(orP[0]);for(let i=1;i<orP.length;i++){if(this.truthy(r))return true;r=await this.eval(orP[i]);}return this.truthy(r);}
+    const andP=this.splitByKeyword(expr,' dan ');if(andP.length>1){let r=await this.eval(andP[0]);for(let i=1;i<andP.length;i++){if(!this.truthy(r))return false;r=await this.eval(andP[i]);}return this.truthy(r);}
+    if(expr.startsWith('bukan '))return!this.truthy(await this.eval(expr.slice(6)));
+    const ops=['!=','==','>=','<=','>','<','+','-','*','/','%'];
+    for(const op of ops){const idx=this.findOperator(expr,op);if(idx!==-1){const l=await this.eval(expr.slice(0,idx).trim()),r=await this.eval(expr.slice(idx+op.length).trim());switch(op){case'+':{return(typeof l==='number'&&typeof r==='number')?l+r:String(l)+String(r);}case'-':return l-r;case'*':return l*r;case'/':return r!==0?l/r:(cetak('⚠ Bagi nol!','out-warn'),0);case'%':return l%r;case'==':return l==r;case'!=':return l!=r;case'>=':return l>=r;case'<=':return l<=r;case'>':return l>r;case'<':return l<r;}}}
+    if(expr[0]==='-')return-(await this.eval(expr.slice(1)));
+    const cm=expr.match(/^(\\w+)\\s*\\((.*)\\)$/s);
+    if(cm){const fn=cm[1];const aR=cm[2]?this.splitCommaRespecting(cm[2]):[];const args=[];for(const a of aR)args.push(await this.eval(a.trim()));
+      if(fn==='tanya'||fn==='tanyakan')return await tanyaPengguna(args[0]||'Masukkan nilai:');
+      if(fn==='tulis'||fn==='tuliskan'){cetak(args[0]===null||args[0]===undefined?'kosong':String(args[0]));return null;}
+      if(fn in this.builtins)return this.builtins[fn](...args);
+      if(fn in this.functions){const f=this.functions[fn];const sc={};f.params.forEach((p,i)=>sc[p]=args[i]!==undefined?args[i]:null);const se=this.env;this.env=[...f.closure.map(e=>({...e})),sc];try{await this.execBlock(f.body);}catch(e){if(e.type==='kembalikan'){this.env=se;return e.val;}this.env=se;throw e;}this.env=se;return null;}
+      throw new Error(\`Fungsi '\${fn}' tidak ditemukan\`);}
+    const im=expr.match(/^(\\w+)\\[(.+?)\\]$/);if(im){const arr=this.getVar(im[1]);const idx=await this.eval(im[2]);return Array.isArray(arr)?arr[idx]:null;}
+    if(/^\\w+$/.test(expr))return this.getVar(expr);
+    throw new Error(\`Tidak bisa mengevaluasi: '\${expr}'\`);}
+  splitCommaRespecting(s){const p=[];let d=0,c='',iS=false,sC='';for(let i=0;i<s.length;i++){const ch=s[i];if(iS){c+=ch;if(ch===sC)iS=false;continue;}if(ch==='"'||ch==="'"){iS=true;sC=ch;c+=ch;continue;}if(ch==='('||ch==='['){d++;c+=ch;continue;}if(ch===')'||ch===']'){d--;c+=ch;continue;}if(ch===','&&d===0){p.push(c.trim());c='';continue;}c+=ch;}if(c.trim())p.push(c.trim());return p;}
+  splitByKeyword(s,kw){const p=[];let c='',d=0,iS=false,sC='';for(let i=0;i<s.length;i++){const ch=s[i];if(iS){c+=ch;if(ch===sC)iS=false;continue;}if(ch==='"'||ch==="'"){iS=true;sC=ch;c+=ch;continue;}if(ch==='('||ch==='['){d++;c+=ch;continue;}if(ch===')'||ch===']'){d--;c+=ch;continue;}if(d===0&&s.slice(i).startsWith(kw)){p.push(c.trim());c='';i+=kw.length-1;continue;}c+=ch;}if(c.trim())p.push(c.trim());return p;}
+  findOperator(s,op){let d=0,iS=false,sC='';for(let i=0;i<=s.length-op.length;i++){const c=s[i];if(iS){if(c===sC)iS=false;continue;}if(c==='"'||c==="'"){iS=true;sC=c;continue;}if(c==='('||c==='['){d++;continue;}if(c===')'||c===']'){d--;continue;}if(d===0&&s.slice(i,i+op.length)===op){const b=s[i-1],a=s[i+op.length];if(op==='>'&&(b==='='||a==='='))continue;if(op==='<'&&(b==='='||a==='='))continue;if(op==='='&&(b==='='||b==='!'||b==='>'||b==='<'||a==='='))continue;if(op==='!'&&a==='=')continue;return i;}}return -1;}}
+
+let interpreter;
+async function jalankan(){
+  interpreter=new Interpreter();
+  outputEl.innerHTML='';
+  cetak('▶ Menjalankan program...','out-info');
+  cetak('','out-info');
+  try{
+    await interpreter.runProgram(document.getElementById('editor').value);
+    cetak('','out-info');cetak('✓ Program selesai','out-info');
+  }catch(e){cetak('⚠ Kesalahan: '+e.message,'out-error');}
+}
+
+window.onload=()=>{
+  document.getElementById('editor').value=KODE_PROGRAM;
+};
+document.addEventListener('keydown',(e)=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();jalankan();}
+});
+<\/script>
+</body>
+</html>`;
+}
+</script>
+</body>
+</html>

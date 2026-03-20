@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Kanaan — Bahasa pemrograman pertama berbahasa Indonesia. Belajar coding dengan sintaks Bahasa Indonesia yang mudah dipahami.">
+<meta name="keywords" content="kanaan, bahasa pemrograman indonesia, belajar coding, programming indonesia">
+<meta name="author" content="Kanaan">
+<meta property="og:title" content="Kanaan — Bahasa Pemrograman Indonesia">
+<meta property="og:description" content="Bahasa pemrograman pertama berbahasa Indonesia.">
+<meta property="og:type" content="website">
+<title>Kanaan — Bahasa Pemrograman Indonesia</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07090f;--bg2:#0d1117;--bg3:#161b22;--border:#21262d;--merah:#e63946;--merah2:#ff6b6b;--hijau:#3fb950;--biru:#58a6ff;--kuning:#f0883e;--text:#e6edf3;--muted:#7d8590;--card:#161b22;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(7,9,15,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 5%;display:flex;align-items:center;height:62px;gap:4px;}
+.nav-logo{font-size:22px;font-weight:800;color:var(--text);margin-right:20px;cursor:pointer;border:none;background:none;font-family:inherit;letter-spacing:-0.5px;}
+.nav-logo span{color:var(--merah);}
+.nav-links{display:flex;align-items:center;gap:2px;flex:1;}
+.nav-btn{padding:6px 13px;border-radius:6px;font-size:14px;font-weight:500;color:var(--muted);cursor:pointer;transition:all 0.15s;background:none;border:none;font-family:inherit;}
+.nav-btn:hover,.nav-btn.active{color:var(--text);background:var(--bg3);}
+.nav-btn.active{color:var(--biru);}
+.nav-right{display:flex;align-items:center;gap:8px;margin-left:auto;}
+.lang-btn{padding:5px 10px;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--muted);font-family:inherit;transition:all 0.15s;}
+.lang-btn.active{border-color:var(--biru);color:var(--biru);}
+.btn-cta{padding:8px 20px;border-radius:7px;font-size:13px;font-weight:700;background:var(--merah);color:#fff;border:none;cursor:pointer;font-family:inherit;transition:all 0.15s;}
+.btn-cta:hover{background:#c1121f;transform:translateY(-1px);}
+.page{display:none;padding-top:62px;min-height:100vh;}
+.page.active{display:block;}
+.hero{min-height:calc(100vh - 62px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 5%;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(230,57,70,0.12),transparent),radial-gradient(ellipse 60% 40% at 80% 80%,rgba(88,166,255,0.08),transparent);pointer-events:none;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(230,57,70,0.1);border:1px solid rgba(230,57,70,0.3);color:var(--merah2);padding:5px 16px;border-radius:20px;font-size:12px;font-weight:600;letter-spacing:0.5px;margin-bottom:24px;}
+.hero h1{font-size:clamp(36px,6vw,70px);font-weight:800;line-height:1.1;letter-spacing:-1.5px;margin-bottom:20px;}
+.hero h1 em{color:var(--merah);font-style:normal;}
+.hero p{font-size:clamp(16px,2vw,19px);color:var(--muted);max-width:580px;line-height:1.65;margin-bottom:36px;}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+.btn-primary{padding:13px 30px;border-radius:8px;font-size:15px;font-weight:700;background:var(--merah);color:#fff;border:none;cursor:pointer;font-family:inherit;transition:all 0.2s;}
+.btn-primary:hover{background:#c1121f;transform:translateY(-2px);box-shadow:0 8px 24px rgba(230,57,70,0.3);}
+.btn-secondary{padding:13px 30px;border-radius:8px;font-size:15px;font-weight:700;background:transparent;color:var(--text);border:1px solid var(--border);cursor:pointer;font-family:inherit;transition:all 0.2s;}
+.btn-secondary:hover{border-color:var(--biru);color:var(--biru);}
+.hero-code{margin-top:52px;width:100%;max-width:540px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;text-align:left;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+.code-hdr{padding:10px 16px;background:var(--bg3);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;}
+.cdot{width:10px;height:10px;border-radius:50%;}
+.code-body{padding:20px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.85;}
+.kw{color:#ff7b72;}.fn{color:#d2a8ff;}.str{color:#a5d6ff;}.cm{color:#8b949e;font-style:italic;}.num{color:#79c0ff;}.op{color:var(--muted);}
+.section{padding:80px 5%;}
+.sec-label{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--merah);margin-bottom:12px;}
+.section h2{font-size:clamp(26px,4vw,42px);font-weight:800;letter-spacing:-0.5px;margin-bottom:14px;}
+.section .sub{color:var(--muted);font-size:16px;max-width:500px;line-height:1.6;margin-bottom:44px;}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;}
+.feat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;transition:all 0.2s;}
+.feat-card:hover{border-color:rgba(88,166,255,0.4);transform:translateY(-3px);}
+.feat-icon{font-size:28px;margin-bottom:12px;}
+.feat-card h3{font-size:15px;font-weight:700;margin-bottom:7px;}
+.feat-card p{font-size:13px;color:var(--muted);line-height:1.6;}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:780px;}
+.cbox{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.cbox-hdr{padding:9px 16px;background:var(--bg3);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);}
+.cbox-hdr.id{color:var(--hijau);}
+.cbox pre{padding:16px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8;color:#cdd6f4;overflow-x:auto;}
+.stats-row{display:flex;gap:40px;flex-wrap:wrap;margin-top:56px;}
+.stat-num{font-size:42px;font-weight:800;color:var(--merah);letter-spacing:-1px;}
+.stat-lbl{font-size:13px;color:var(--muted);margin-top:4px;}
+.cta-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:56px 40px;max-width:680px;margin:0 auto;text-align:center;}
+.docs-wrap{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - 62px);}
+.docs-side{border-right:1px solid var(--border);padding:20px 0;position:sticky;top:62px;height:calc(100vh - 62px);overflow-y:auto;background:var(--bg);}
+.docs-side h4{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:8px 18px;margin-top:10px;}
+.docs-link{display:block;width:100%;padding:7px 18px;font-size:13px;color:var(--muted);cursor:pointer;border:none;border-left:2px solid transparent;background:none;font-family:inherit;text-align:left;transition:all 0.12s;}
+.docs-link:hover{color:var(--text);background:var(--bg3);}
+.docs-link.active{color:var(--biru);border-left-color:var(--biru);background:rgba(88,166,255,0.05);}
+.docs-body{padding:48px 5%;max-width:780px;}
+.docs-body h1{font-size:34px;font-weight:800;letter-spacing:-0.5px;margin-bottom:14px;}
+.docs-body h2{font-size:21px;font-weight:700;margin:32px 0 12px;color:var(--biru);}
+.docs-body p{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:12px;}
+.docs-body ul{padding-left:20px;margin-bottom:12px;}
+.docs-body li{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:3px;}
+.docs-body code{font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:2px 6px;color:var(--merah2);}
+.docs-body pre{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:18px;margin:14px 0;overflow-x:auto;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.8;color:#cdd6f4;}
+.note-box{background:rgba(88,166,255,0.08);border:1px solid rgba(88,166,255,0.2);border-radius:8px;padding:13px 16px;margin:14px 0;font-size:14px;color:var(--biru);}
+.blog-wrap{padding:56px 5%;max-width:1080px;margin:0 auto;}
+.blog-wrap h1{font-size:40px;font-weight:800;letter-spacing:-1px;margin-bottom:6px;}
+.blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px;margin-top:36px;}
+.blog-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:all 0.2s;}
+.blog-card:hover{border-color:var(--biru);transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,0.3);}
+.bthumb{height:150px;display:flex;align-items:center;justify-content:center;font-size:44px;}
+.bt1{background:linear-gradient(135deg,rgba(230,57,70,0.2),rgba(188,140,255,0.1));}
+.bt2{background:linear-gradient(135deg,rgba(88,166,255,0.2),rgba(63,185,80,0.1));}
+.bt3{background:linear-gradient(135deg,rgba(240,136,62,0.2),rgba(230,57,70,0.1));}
+.bt4{background:linear-gradient(135deg,rgba(63,185,80,0.2),rgba(88,166,255,0.1));}
+.bt5{background:linear-gradient(135deg,rgba(188,140,255,0.2),rgba(240,136,62,0.1));}
+.bbody{padding:18px;}
+.btag{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--merah);margin-bottom:7px;}
+.blog-card h3{font-size:15px;font-weight:700;line-height:1.4;margin-bottom:7px;}
+.blog-card p{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:12px;}
+.bmeta{display:flex;gap:10px;font-size:11px;color:var(--muted);}
+.blog-post-content{padding:56px 5%;max-width:700px;margin:0 auto;}
+.blog-post-content h1{font-size:34px;font-weight:800;letter-spacing:-0.5px;margin-bottom:14px;}
+.blog-post-content .pmeta{color:var(--muted);font-size:13px;margin-bottom:28px;display:flex;gap:14px;flex-wrap:wrap;}
+.blog-post-content p{font-size:15px;color:var(--muted);line-height:1.85;margin-bottom:16px;}
+.blog-post-content h2{font-size:21px;font-weight:700;margin:28px 0 10px;color:var(--text);}
+.blog-post-content pre{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:18px;margin:14px 0;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.8;color:#cdd6f4;overflow-x:auto;}
+.back-btn{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;font-family:inherit;padding:0 0 28px 0;display:inline-flex;align-items:center;gap:5px;}
+.back-btn:hover{color:var(--text);}
+.about-hero{padding:72px 5% 32px;max-width:860px;margin:0 auto;}
+.about-hero h1{font-size:clamp(30px,5vw,52px);font-weight:800;letter-spacing:-1px;margin-bottom:18px;}
+.about-hero p{font-size:16px;color:var(--muted);line-height:1.8;margin-bottom:14px;}
+.about-sec{padding:32px 5%;max-width:860px;margin:0 auto;}
+.about-sec h2{font-size:22px;font-weight:800;margin-bottom:14px;color:var(--biru);}
+.about-sec p{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:10px;}
+.timeline{position:relative;padding-left:28px;margin-top:18px;}
+.timeline::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:2px;background:var(--border);}
+.tl-item{position:relative;margin-bottom:24px;}
+.tl-dot{position:absolute;left:-23px;top:4px;width:11px;height:11px;border-radius:50%;background:var(--merah);border:2px solid var(--bg);}
+.tl-item h4{font-size:14px;font-weight:700;margin-bottom:3px;}
+.tl-item p{font-size:13px;color:var(--muted);line-height:1.6;}
+.kontak-wrap{padding:72px 5%;max-width:660px;margin:0 auto;}
+.kontak-wrap h1{font-size:40px;font-weight:800;letter-spacing:-1px;margin-bottom:8px;}
+.kontak-wrap .sub{color:var(--muted);font-size:16px;margin-bottom:40px;}
+.fgroup{margin-bottom:18px;}
+.fgroup label{display:block;font-size:13px;font-weight:600;margin-bottom:7px;}
+.fgroup input,.fgroup textarea,.fgroup select{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:11px 15px;color:var(--text);font-family:inherit;font-size:14px;outline:none;transition:border-color 0.15s;}
+.fgroup input:focus,.fgroup textarea:focus,.fgroup select:focus{border-color:var(--biru);}
+.fgroup textarea{min-height:130px;resize:vertical;}
+.fgroup select option{background:var(--bg2);}
+.btn-submit{background:var(--merah);color:#fff;border:none;padding:11px 28px;border-radius:8px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;width:100%;transition:all 0.15s;}
+.btn-submit:hover{background:#c1121f;}
+.form-ok{display:none;background:rgba(63,185,80,0.1);border:1px solid rgba(63,185,80,0.3);border-radius:8px;padding:14px;text-align:center;color:var(--hijau);margin-top:14px;}
+.kontak-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:40px;}
+.kcard{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;}
+.kcard h4{font-size:13px;font-weight:700;margin-bottom:5px;}
+.kcard a{font-size:12px;color:var(--muted);text-decoration:none;}
+.kcard a:hover{color:var(--biru);}
+.ad-slot{background:var(--bg3);border:1px dashed var(--border);border-radius:8px;padding:16px;text-align:center;color:var(--muted);font-size:11px;margin:20px 0;min-height:80px;display:flex;align-items:center;justify-content:center;}
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:44px 5% 22px;}
+.ftr-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:36px;margin-bottom:36px;}
+.ftr-brand .logo{font-size:19px;font-weight:800;margin-bottom:8px;letter-spacing:-0.5px;}
+.ftr-brand .logo span{color:var(--merah);}
+.ftr-brand p{font-size:12px;color:var(--muted);line-height:1.6;max-width:240px;}
+.fcol h4{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.fcol button,.fcol a{display:block;font-size:13px;color:var(--muted);text-decoration:none;margin-bottom:7px;cursor:pointer;background:none;border:none;font-family:inherit;padding:0;text-align:left;}
+.fcol button:hover,.fcol a:hover{color:var(--text);}
+.ftr-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:22px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);}
+.ftr-bottom a{color:var(--muted);text-decoration:none;}
+.ftr-bottom a:hover{color:var(--text);}
+.divider{height:1px;background:var(--border);margin:44px 0;}
+@media(max-width:768px){.ftr-grid{grid-template-columns:1fr 1fr;}.compare-grid{grid-template-columns:1fr;}.docs-wrap{grid-template-columns:1fr;}.docs-side{display:none;}.kontak-cards{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <button class="nav-logo" onclick="showPage('home')">Ka<span>naan</span></button>
+  <div class="nav-links">
+    <button class="nav-btn active" id="nb-home" onclick="showPage('home')">Beranda</button>
+    <button class="nav-btn" id="nb-docs" onclick="showPage('docs')">Dokumentasi</button>
+    <button class="nav-btn" id="nb-blog" onclick="showPage('blog')">Blog</button>
+    <button class="nav-btn" id="nb-tentang" onclick="showPage('tentang')">Tentang</button>
+    <button class="nav-btn" id="nb-kontak" onclick="showPage('kontak')">Kontak</button>
+  </div>
+  <div class="nav-right">
+    <button class="lang-btn active" id="lid" onclick="setLang('id')">ID</button>
+    <button class="lang-btn" id="len" onclick="setLang('en')">EN</button>
+    <button class="btn-cta" onclick="bukaEditor()">&#9654; Coba Sekarang</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="hero-badge">&#127470;&#127465; Bahasa Pemrograman Pertama Berbahasa Indonesia</div>
+    <h1>Belajar Coding dalam<br><em>Bahasa Indonesia</em></h1>
+    <p>Kanaan adalah bahasa pemrograman yang menggunakan sintaks Bahasa Indonesia. Tidak perlu fasih Bahasa Inggris untuk mulai belajar logika pemrograman.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="bukaEditor()">&#9654; Coba di Browser</button>
+      <button class="btn-secondary" onclick="showPage('docs')">&#128218; Baca Dokumentasi</button>
+    </div>
+    <div class="hero-code">
+      <div class="code-hdr">
+        <div class="cdot" style="background:#ff5f57"></div>
+        <div class="cdot" style="background:#febc2e"></div>
+        <div class="cdot" style="background:#28c840"></div>
+        <span style="margin-left:8px;font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace">contoh.kn</span>
+      </div>
+      <div class="code-body">
+        <span class="cm">// Program Halo Dunia</span><br>
+        <span class="kw">tuliskan</span>(<span class="str">"Halo, Dunia!"</span>)<br><br>
+        <span class="cm">// Assignment baru</span><br>
+        <span class="kw">umur</span> <span class="op">adalah</span> <span class="num">17</span><br><br>
+        <span class="cm">// Kelas &amp; Objek</span><br>
+        <span class="kw">cetakbiru</span> <span class="fn">Siswa</span>:<br>
+        &nbsp;&nbsp;<span class="kw">fungsi</span> <span class="fn">buat</span>(nama):<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;nama.<span class="op">$</span>nama <span class="op">=</span> nama<br><br>
+        <span class="kw">jadikan</span> budi <span class="op">obyek dari</span> <span class="fn">Siswa</span>(<span class="str">"Budi"</span>)<br>
+        <span class="kw">tuliskan</span>(nama budi)
+      </div>
+    </div>
+  </section>
+
+  <div style="padding:0 5%"><div class="ad-slot">Advertisement &#8212; 728x90</div></div>
+
+  <section class="section">
+    <div class="sec-label">KEUNGGULAN</div>
+    <h2>Kenapa Kanaan?</h2>
+    <p class="sub">Dirancang khusus untuk pelajar Indonesia agar bisa belajar coding tanpa hambatan bahasa.</p>
+    <div class="feat-grid">
+      <div class="feat-card"><div class="feat-icon">&#127470;&#127465;</div><h3>Sintaks Bahasa Indonesia</h3><p>Semua kata kunci dalam Bahasa Indonesia &#8212; untuk, jika, saat, fungsi, cetakbiru.</p></div>
+      <div class="feat-card"><div class="feat-icon">&#9889;</div><h3>Langsung di Browser</h3><p>Tidak perlu instalasi apapun. Buka browser, langsung coding.</p></div>
+      <div class="feat-card"><div class="feat-icon">&#128230;</div><h3>Ekspor Program</h3><p>Unduh program sebagai paket ZIP yang bisa dijalankan offline.</p></div>
+      <div class="feat-card"><div class="feat-icon">&#127963;</div><h3>OOP Berbahasa Indonesia</h3><p>cetakbiru, jadikan obyek dari, metode() objek &#8212; semuanya Indonesia.</p></div>
+      <div class="feat-card"><div class="feat-icon">&#128218;</div><h3>Referensi Interaktif</h3><p>Panel panduan yang bisa diklik untuk menyisipkan kode ke editor.</p></div>
+      <div class="feat-card"><div class="feat-icon">&#127358;</div><h3>Gratis Selamanya</h3><p>Kanaan sepenuhnya gratis untuk semua pelajar Indonesia.</p></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="sec-label">PERBANDINGAN</div>
+    <h2>Kanaan vs Bahasa Lain</h2>
+    <p class="sub">Lihat betapa lebih mudahnya kode Kanaan dibaca dan dipahami.</p>
+    <div class="compare-grid">
+      <div class="cbox"><div class="cbox-hdr">Python / JavaScript</div><pre>for i in range(1, 6):
+    if i % 2 == 0:
+        print("Genap:", i)
+    else:
+        print("Ganjil:", i)</pre></div>
+      <div class="cbox"><div class="cbox-hdr id">&#127470;&#127465; Kanaan</div><pre>untuk i dari 1 sampai 5 lakukan:
+  jika i % 2 sama dengan 0 maka:
+    tuliskan("Genap: " + i)
+  jika tidak:
+    tuliskan("Ganjil: " + i)</pre></div>
+    </div>
+    <div class="stats-row">
+      <div><div class="stat-num">100%</div><div class="stat-lbl">Bahasa Indonesia</div></div>
+      <div><div class="stat-num">0</div><div class="stat-lbl">Instalasi dibutuhkan</div></div>
+      <div><div class="stat-num">10+</div><div class="stat-lbl">Struktur kontrol</div></div>
+      <div><div class="stat-num">&#8734;</div><div class="stat-lbl">Potensi pelajar</div></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="cta-box">
+      <div style="font-size:46px;margin-bottom:14px">&#128640;</div>
+      <h2 style="font-size:30px;margin-bottom:10px">Siap Mulai Belajar?</h2>
+      <p style="color:var(--muted);margin-bottom:26px">Langsung coba Kanaan di browser &#8212; gratis, tanpa instalasi.</p>
+      <button class="btn-primary" onclick="bukaEditor()">&#9654; Buka Editor Sekarang</button>
+    </div>
+  </section>
+
+  <footer>
+    <div class="ftr-grid">
+      <div class="ftr-brand"><div class="logo">Ka<span>naan</span></div><p>Bahasa pemrograman pertama berbahasa Indonesia. Dibuat untuk generasi pelajar Indonesia.</p></div>
+      <div class="fcol"><h4>PRODUK</h4><button onclick="bukaEditor()">Editor Online</button><button onclick="showPage('docs')">Dokumentasi</button><button onclick="showPage('blog')">Blog</button></div>
+      <div class="fcol"><h4>PERUSAHAAN</h4><button onclick="showPage('tentang')">Tentang Kami</button><button onclick="showPage('kontak')">Kontak</button></div>
+      <div class="fcol"><h4>SOSIAL</h4><a href="#">LinkedIn</a><a href="#">GitHub</a><a href="#">Twitter / X</a></div>
+    </div>
+    <div class="ftr-bottom"><span>&#169; 2025 Kanaan. Semua hak dilindungi.</span><span><a href="#">Kebijakan Privasi</a></span></div>
+  </footer>
+</div>
+
+<!-- DOCS -->
+<div class="page" id="page-docs">
+  <div class="docs-wrap">
+    <div class="docs-side">
+      <h4>MEMULAI</h4>
+      <button class="docs-link active" onclick="showDoc('pengantar')">Pengantar</button>
+      <button class="docs-link" onclick="showDoc('instalasi')">Instalasi</button>
+      <button class="docs-link" onclick="showDoc('halo')">Halo Dunia</button>
+      <h4>SINTAKS</h4>
+      <button class="docs-link" onclick="showDoc('variabel')">Variabel</button>
+      <button class="docs-link" onclick="showDoc('kondisi')">Kondisi</button>
+      <button class="docs-link" onclick="showDoc('perulangan')">Perulangan</button>
+      <button class="docs-link" onclick="showDoc('fungsi')">Fungsi</button>
+      <button class="docs-link" onclick="showDoc('daftar')">Daftar</button>
+      <h4>OOP</h4>
+      <button class="docs-link" onclick="showDoc('kelas')">Cetakbiru &amp; Objek</button>
+      <h4>REFERENSI</h4>
+      <button class="docs-link" onclick="showDoc('builtin')">Fungsi Bawaan</button>
+    </div>
+    <div class="docs-body" id="docs-body"></div>
+  </div>
+</div>
+
+<!-- BLOG -->
+<div class="page" id="page-blog">
+  <div id="blog-list-view">
+    <div class="blog-wrap">
+      <h1>Blog &amp; Tutorial</h1>
+      <p style="color:var(--muted);font-size:16px;margin-top:6px">Artikel dan panduan seputar Kanaan.</p>
+      <div class="ad-slot">Advertisement &#8212; 728x90</div>
+      <div class="blog-grid" id="blog-grid"></div>
+    </div>
+  </div>
+  <div id="blog-post-view" style="display:none">
+    <div style="padding:40px 5% 0;max-width:700px;margin:0 auto">
+      <button class="back-btn" onclick="tutupPost()">&#8592; Kembali ke Blog</button>
+    </div>
+    <div class="blog-post-content" id="blog-post-content"></div>
+    <div style="padding:0 5% 60px;max-width:700px;margin:0 auto"><div class="ad-slot">Advertisement &#8212; 728x90</div></div>
+  </div>
+</div>
+
+<!-- TENTANG -->
+<div class="page" id="page-tentang">
+  <div class="about-hero">
+    <div class="sec-label">TENTANG KAMI</div>
+    <h1>Membangun Jembatan antara Bahasa dan Teknologi</h1>
+    <p>Kanaan lahir dari pertanyaan sederhana: mengapa jutaan pelajar Indonesia harus belajar pemrograman dalam bahasa yang bukan bahasa ibu mereka?</p>
+    <p>Kami percaya hambatan bahasa tidak seharusnya menjadi penghalang untuk belajar logika pemrograman. Kanaan hadir sebagai jawaban &#8212; tanah yang dijanjikan bagi pelajar Indonesia di dunia teknologi.</p>
+  </div>
+  <div class="about-sec">
+    <div class="ad-slot">Advertisement &#8212; 300x250</div>
+    <h2>Perjalanan Kami</h2>
+    <div class="timeline">
+      <div class="tl-item"><div class="tl-dot"></div><h4>2024 &#8212; Ide Pertama</h4><p>Konsep Kanaan mulai dikembangkan sebagai eksperimen bahasa pemrograman berbahasa Indonesia.</p></div>
+      <div class="tl-item"><div class="tl-dot"></div><h4>2025 &#8212; Versi Beta</h4><p>Interpreter pertama berjalan di browser dengan fitur dasar lengkap.</p></div>
+      <div class="tl-item"><div class="tl-dot"></div><h4>2025 &#8212; OOP &amp; Ekspor</h4><p>Ditambahkan OOP (cetakbiru, jadikan obyek dari) dan fitur ekspor program.</p></div>
+      <div class="tl-item"><div class="tl-dot"></div><h4>Masa Depan</h4><p>Library standar, IDE desktop, dan kurikulum resmi untuk sekolah Indonesia.</p></div>
+    </div>
+    <div class="divider"></div>
+    <h2>Misi Kami</h2>
+    <p>Mendemokratisasi akses terhadap ilmu pemrograman bagi seluruh masyarakat Indonesia, tanpa terkecuali. Seperti Kanaan &#8212; tanah yang dijanjikan &#8212; kami ingin teknologi menjadi tanah yang terbuka bagi semua.</p>
+  </div>
+  <footer style="margin-top:60px">
+    <div class="ftr-grid">
+      <div class="ftr-brand"><div class="logo">Ka<span>naan</span></div><p>Bahasa pemrograman pertama berbahasa Indonesia.</p></div>
+      <div class="fcol"><h4>NAVIGASI</h4><button onclick="showPage('home')">Beranda</button><button onclick="bukaEditor()">Editor</button></div>
+      <div class="fcol"><h4>PERUSAHAAN</h4><button onclick="showPage('tentang')">Tentang</button><button onclick="showPage('kontak')">Kontak</button></div>
+      <div class="fcol"><h4>SOSIAL</h4><a href="#">LinkedIn</a><a href="#">GitHub</a></div>
+    </div>
+    <div class="ftr-bottom"><span>&#169; 2025 Kanaan</span></div>
+  </footer>
+</div>
+
+<!-- KONTAK -->
+<div class="page" id="page-kontak">
+  <div class="kontak-wrap">
+    <div class="sec-label">KONTAK</div>
+    <h1>Hubungi Kami</h1>
+    <p class="sub">Ada pertanyaan atau ingin berkolaborasi? Kami senang mendengar dari Anda.</p>
+    <form onsubmit="kirimKontak(event)">
+      <div class="fgroup"><label>Nama Lengkap</label><input type="text" placeholder="Budi Santoso" required></div>
+      <div class="fgroup"><label>Alamat Email</label><input type="email" placeholder="budi@email.com" required></div>
+      <div class="fgroup"><label>Topik</label>
+        <select>
+          <option>Pertanyaan Umum</option>
+          <option>Laporan Bug</option>
+          <option>Permintaan Fitur</option>
+          <option>Kolaborasi</option>
+        </select>
+      </div>
+      <div class="fgroup"><label>Pesan</label><textarea placeholder="Tulis pesan Anda..." required></textarea></div>
+      <button type="submit" class="btn-submit">Kirim Pesan &#8594;</button>
+      <div class="form-ok" id="form-ok">&#9989; Pesan berhasil terkirim! Kami akan membalas segera.</div>
+    </form>
+    <div class="kontak-cards">
+      <div class="kcard"><h4>&#128231; Email</h4><a href="mailto:halo@kanaan.id">halo@kanaan.id</a></div>
+      <div class="kcard"><h4>&#128188; LinkedIn</h4><a href="#">linkedin.com/company/kanaan</a></div>
+      <div class="kcard"><h4>&#128025; GitHub</h4><a href="#">github.com/kanaan-lang</a></div>
+      <div class="kcard"><h4>&#128038; Twitter / X</h4><a href="#">@kanaanlang</a></div>
+    </div>
+    <div class="ad-slot" style="margin-top:36px">Advertisement &#8212; 300x250</div>
+  </div>
+</div>
+
+<script>
+var lang = 'id';
+var activeDoc = 'pengantar';
+
+function showPage(id) {
+  var pages = document.querySelectorAll('.page');
+  for (var i = 0; i < pages.length; i++) pages[i].classList.remove('active');
+  var btns = document.querySelectorAll('.nav-btn');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+  document.getElementById('page-' + id).classList.add('active');
+  var nb = document.getElementById('nb-' + id);
+  if (nb) nb.classList.add('active');
+  window.scrollTo(0, 0);
+  if (id === 'docs') showDoc(activeDoc);
+  if (id === 'blog') renderBlog();
+}
+
+function bukaEditor() {
+  window.open('editor.html', '_blank');
+}
+
+function setLang(l) {
+  lang = l;
+  document.getElementById('lid').classList.toggle('active', l === 'id');
+  document.getElementById('len').classList.toggle('active', l === 'en');
+}
+
+var DOCS = {
+  pengantar: '<h1>Pengantar Kanaan</h1><p>Kanaan adalah bahasa pemrograman yang dirancang khusus untuk penutur Bahasa Indonesia. Semua kata kunci menggunakan Bahasa Indonesia yang alami.</p><div class="note-box">Kanaan berjalan langsung di browser - tidak perlu instalasi apapun!</div><h2>Fitur Utama</h2><ul><li>Variabel dengan <code>adalah</code> atau <code>=</code></li><li>Kondisi: <code>jika / maka / atau jika / jika tidak</code></li><li>Perulangan: <code>untuk / saat / untuk setiap</code></li><li>Fungsi dengan <code>kembalikan</code></li><li>Daftar (array)</li><li>Kelas dengan <code>cetakbiru</code> dan objek dengan <code>jadikan obyek dari</code></li><li>Input pengguna interaktif</li><li>Ekspor ke paket offline</li></ul>',
+  instalasi: '<h1>Instalasi</h1><p>Kanaan tidak memerlukan instalasi! Klik <strong>Coba Sekarang</strong> di navbar untuk membuka editor di tab baru.</p><h2>Cara Menggunakan</h2><ul><li>Klik <strong>Coba Sekarang</strong> - editor terbuka di tab baru</li><li>Tulis kode di panel editor (kanan)</li><li>Klik <strong>Jalankan</strong> atau tekan <code>Ctrl+Enter</code></li><li>Lihat hasil di panel Output (bawah)</li><li>Klik <strong>Unduh Program</strong> untuk paket offline</li></ul>',
+  halo: '<h1>Halo Dunia</h1><p>Program pertama setiap programmer.</p><pre>tuliskan("Halo, Dunia!")</pre><h2>Dengan Variabel</h2><pre>nama adalah "Budi"\ntuliskan("Halo, " + nama + "!")\ntuliskan("Selamat datang di Kanaan")</pre>',
+  variabel: '<h1>Variabel</h1><p>Variabel menyimpan data. Ada dua cara menulis assignment di Kanaan:</p><pre>// Cara baru (dianjurkan)\nnama adalah "Budi"\numur adalah 17\ntinggi adalah 1.75\naktif adalah benar\n\n// Cara lama (tetap jalan)\nnama = "Budi"\numur = 17</pre><h2>Tipe Data</h2><ul><li><strong>Teks</strong>: <code>"Halo"</code></li><li><strong>Angka</strong>: <code>42</code>, <code>3.14</code></li><li><strong>Boolean</strong>: <code>benar</code> atau <code>salah</code></li><li><strong>Kosong</strong>: <code>kosong</code></li></ul><h2>Input dengan lalu simpan di</h2><pre>tanyakan("Nama kamu?") lalu simpan di nama\ntuliskan("Halo, " + nama)</pre>',
+  kondisi: '<h1>Kondisi</h1><pre>nilai adalah 85\n\njika nilai &gt;= 90 maka:\n  tuliskan("Nilai A")\natau jika nilai &gt;= 80 maka:\n  tuliskan("Nilai B")\natau jika nilai &gt;= 70 maka:\n  tuliskan("Nilai C")\njika tidak:\n  tuliskan("Perlu belajar lebih")</pre><h2>Operator Logika</h2><ul><li><code>dan</code> - and</li><li><code>atau</code> - or</li><li><code>bukan</code> - not</li><li><code>sama dengan</code> - ==</li><li><code>tidak sama</code> - !=</li></ul>',
+  perulangan: '<h1>Perulangan</h1><h2>untuk N kali lakukan</h2><pre>untuk 5 kali lakukan:\n  tuliskan("Halo!")</pre><h2>untuk X dari A sampai B</h2><pre>untuk i dari 1 sampai 10 lakukan:\n  tuliskan("Angka: " + i)</pre><h2>saat ... lakukan (while)</h2><pre>x adalah 0\nsaat x &lt; 5 lakukan:\n  tuliskan(x)\n  x = x + 1</pre><h2>untuk setiap ... dalam ... (for-each)</h2><pre>buah adalah ["apel", "mangga", "jeruk"]\nuntuk setiap b dalam buah lakukan:\n  tuliskan(b)</pre><p>Gunakan <code>hentikan</code> (break) dan <code>lanjutkan</code> (continue).</p>',
+  fungsi: '<h1>Fungsi</h1><pre>fungsi sapa(nama):\n  tuliskan("Halo, " + nama + "!")\n\nfungsi kuadrat(x):\n  kembalikan x * x\n\nsapa("Budi")\nhasil adalah kuadrat(5)\ntuliskan(hasil)</pre><h2>Rekursi</h2><pre>fungsi faktorial(n):\n  jika n &lt;= 1 maka:\n    kembalikan 1\n  kembalikan n * faktorial(n - 1)\n\ntuliskan(faktorial(6))</pre>',
+  daftar: '<h1>Daftar (Array)</h1><pre>angka adalah [1, 2, 3, 4, 5]\nbuah adalah ["apel", "mangga", "jeruk"]\n\ntuliskan(buah[0])          // apel\ntambahkan(buah, "durian")\ntuliskan(panjang(buah))    // 4\n\nuntuk setiap b dalam buah lakukan:\n  tuliskan("- " + b)</pre>',
+  kelas: '<h1>Cetakbiru &amp; Objek (OOP)</h1><p>Di Kanaan, kelas disebut <strong>cetakbiru</strong> (blueprint). Sesuai ejaan Indonesia: diterangkan-menerangkan.</p><pre>cetakbiru Karyawan:\n    fungsi buat(nama, jabatan, gaji):\n        nama.$nama = nama\n        nama.$jabatan = jabatan\n        nama.$gaji = gaji\n\n    fungsi cetakProfil():\n        tuliskan("Nama    : " + $nama)\n        tuliskan("Jabatan : " + $jabatan)\n        tuliskan("Gaji    : Rp " + $gaji)\n\n    fungsi naikGaji(jumlah):\n        $gaji = $gaji + jumlah\n        tuliskan($nama + " naik gaji Rp " + jumlah)\n\n// Buat objek\njadikan budi obyek dari Karyawan("Budi", "Manager", 5000000)\njadikan siti obyek dari Karyawan("Siti", "Developer", 4500000)\n\n// Assignment baru\nbonus adalah 500000\n\n// Akses properti: prop objek\ntuliskan(nama budi)\ntuliskan(jabatan siti)\n\n// Panggil metode: metode() objek\ncetakProfil() budi\ncetakProfil() siti\n\n// Metode dengan argumen\nnaikGaji(bonus) budi\ntuliskan("Gaji budi sekarang: Rp " + gaji budi)</pre><div class="note-box">Di dalam metode gunakan <code>$prop</code>. Di luar gunakan <code>prop objek</code>. Metode dipanggil dengan <code>metode() objek</code>.</div>',
+  builtin: '<h1>Fungsi Bawaan</h1><h2>Output &amp; Input</h2><ul><li><code>tuliskan(x)</code> - cetak ke layar</li><li><code>tanyakan("pesan")</code> - input pengguna</li></ul><h2>Matematika</h2><ul><li><code>bulat(x)</code> <code>lantai(x)</code> <code>langit(x)</code> - round/floor/ceil</li><li><code>akar(x)</code> <code>pangkat(x,n)</code> <code>mutlak(x)</code></li><li><code>maks(a,b)</code> <code>min(a,b)</code> <code>acak()</code> <code>acakBulat(a,b)</code></li></ul><h2>Teks</h2><ul><li><code>panjangTeks(s)</code> <code>besarkan(s)</code> <code>kecilkan(s)</code></li><li><code>gantikan(s,lama,baru)</code> <code>pisahkan(s,pemisah)</code> <code>muncul(s,kata)</code></li><li><code>ubahKeAngka(s)</code> <code>ubahKeTeks(n)</code></li></ul><h2>Daftar</h2><ul><li><code>panjang(daftar)</code> <code>tambahkan(daftar,nilai)</code> <code>hapuskan(daftar,idx)</code></li></ul>'
+};
+
+function showDoc(id) {
+  activeDoc = id;
+  var links = document.querySelectorAll('.docs-link');
+  for (var i = 0; i < links.length; i++) {
+    links[i].classList.remove('active');
+    var oc = links[i].getAttribute('onclick');
+    if (oc && oc.indexOf("'" + id + "'") !== -1) links[i].classList.add('active');
+  }
+  var d = DOCS[id];
+  if (d) {
+    document.getElementById('docs-body').innerHTML = d + '<div class="ad-slot" style="margin-top:36px">Advertisement - 300x250</div>';
+  }
+}
+
+var POSTS = [
+  {id:1,e:'&#128640;',t:'bt1',tg:'PENGANTAR',
+   ti:'Mengenal Kanaan: Bahasa Pemrograman Pertama Berbahasa Indonesia',
+   ex:'Apa itu Kanaan dan mengapa penting bagi dunia pendidikan teknologi Indonesia?',
+   dt:'15 Jan 2025',rd:'5 min',
+   ct:'<h1>Mengenal Kanaan</h1><p class="pmeta"><span>15 Januari 2025</span><span>5 menit</span></p><p>Dunia pemrograman selalu identik dengan bahasa Inggris. Kanaan hadir untuk menjawab tantangan ini - bahasa pemrograman yang menggunakan Bahasa Indonesia sebagai sintaks utama.</p><h2>Mengapa Ini Penting?</h2><p>Dengan Kanaan, pelajar Indonesia cukup fokus pada satu hal: logika pemrograman.</p><pre>untuk i dari 1 sampai 10 lakukan:\n  tuliskan("Angka " + i)</pre><p>Sederhana, intuitif, dan bermakna dalam bahasa sendiri.</p>'},
+  {id:2,e:'&#127891;',t:'bt2',tg:'TUTORIAL',
+   ti:'Tutorial: Membuat Kalkulator dengan Kanaan',
+   ex:'Panduan membuat kalkulator interaktif langkah demi langkah.',
+   dt:'22 Jan 2025',rd:'8 min',
+   ct:'<h1>Tutorial: Membuat Kalkulator</h1><p class="pmeta"><span>22 Januari 2025</span><span>8 menit</span></p><pre>fungsi hitung(a, op, b):\n  jika op sama dengan "+" maka:\n    kembalikan a + b\n  atau jika op sama dengan "-" maka:\n    kembalikan a - b\n  atau jika op sama dengan "*" maka:\n    kembalikan a * b\n  atau jika op sama dengan "/" maka:\n    kembalikan a / b\n  kembalikan 0\n\ntanyakan("Angka pertama:") lalu simpan di a_teks\ntanyakan("Angka kedua:") lalu simpan di b_teks\ntanyakan("Operator (+,-,*,/):") lalu simpan di op\na adalah ubahKeAngka(a_teks)\nb adalah ubahKeAngka(b_teks)\ntuliskan(a + " " + op + " " + b + " = " + hitung(a, op, b))</pre>'},
+  {id:3,e:'&#127963;',t:'bt3',tg:'OOP',
+   ti:'OOP dalam Bahasa Indonesia: cetakbiru dan jadikan obyek dari',
+   ex:'Memahami kelas, objek, dan metode dengan sintaks Kanaan yang unik.',
+   dt:'30 Jan 2025',rd:'10 min',
+   ct:'<h1>OOP dalam Kanaan</h1><p class="pmeta"><span>30 Januari 2025</span><span>10 menit</span></p><p>Kanaan memiliki syntax OOP yang unik dan terasa sangat Indonesia.</p><pre>cetakbiru Hewan:\n    fungsi buat(nama, suara):\n        nama.$nama = nama\n        nama.$suara = suara\n    fungsi bersuara():\n        tuliskan($nama + " bilang: " + $suara)\n\njadikan kucing obyek dari Hewan("Mimi", "Meow")\njadikan anjing obyek dari Hewan("Rex", "Woof")\n\n// Panggil metode: metode() objek\nbersuara() kucing\nbersuara() anjing\ntuliskan(nama kucing)</pre>'},
+  {id:4,e:'&#128161;',t:'bt4',tg:'TIPS',
+   ti:'10 Tips Belajar Pemrograman untuk Pemula Indonesia',
+   ex:'Tips praktis untuk memulai perjalanan coding dengan percaya diri.',
+   dt:'5 Feb 2025',rd:'6 min',
+   ct:'<h1>10 Tips Belajar Pemrograman</h1><p class="pmeta"><span>5 Februari 2025</span><span>6 menit</span></p><h2>1. Mulai dari Yang Kecil</h2><p>Jangan langsung mencoba aplikasi besar. Mulai dengan program sederhana.</p><h2>2. Praktik Setiap Hari</h2><p>30 menit setiap hari lebih baik dari 5 jam sekali seminggu.</p><h2>3. Jangan Takut Salah</h2><p>Error adalah guru terbaik Anda. Setiap error mengajarkan sesuatu.</p><h2>4. Kanaan sebagai Batu Lompatan</h2><p>Kuasai konsep dasar dengan Kanaan, lalu lanjutkan ke Python atau JavaScript.</p>'},
+  {id:5,e:'&#127760;',t:'bt5',tg:'KOMUNITAS',
+   ti:'Masa Depan Kanaan: Ekosistem Pemrograman Indonesia',
+   ex:'Visi kami untuk ekosistem pemrograman lengkap berbahasa Indonesia.',
+   dt:'12 Feb 2025',rd:'7 min',
+   ct:'<h1>Masa Depan Kanaan</h1><p class="pmeta"><span>12 Februari 2025</span><span>7 menit</span></p><h2>Roadmap 2025-2026</h2><ul><li><strong>Library Standar</strong> - Fungsi siap pakai dalam Bahasa Indonesia</li><li><strong>IDE Desktop</strong> - Editor dengan highlight syntax</li><li><strong>Package Manager</strong> - Sistem manajemen paket</li><li><strong>Kurikulum Sekolah</strong> - Untuk SD, SMP, SMA Indonesia</li></ul><p>Seperti Kanaan - tanah yang dijanjikan - kami ingin teknologi menjadi tanah yang terbuka bagi semua rakyat Indonesia!</p>'}
+];
+
+function renderBlog() {
+  document.getElementById('blog-list-view').style.display = '';
+  document.getElementById('blog-post-view').style.display = 'none';
+  var html = '';
+  for (var i = 0; i < POSTS.length; i++) {
+    var p = POSTS[i];
+    html += '<div class="blog-card" onclick="bukaPost(' + p.id + ')">' +
+      '<div class="bthumb ' + p.t + '">' + p.e + '</div>' +
+      '<div class="bbody">' +
+      '<div class="btag">' + p.tg + '</div>' +
+      '<h3>' + p.ti + '</h3>' +
+      '<p>' + p.ex + '</p>' +
+      '<div class="bmeta"><span>&#128197; ' + p.dt + '</span><span>&#9200; ' + p.rd + '</span></div>' +
+      '</div></div>';
+  }
+  document.getElementById('blog-grid').innerHTML = html;
+}
+
+function bukaPost(id) {
+  var p = null;
+  for (var i = 0; i < POSTS.length; i++) { if (POSTS[i].id === id) { p = POSTS[i]; break; } }
+  if (!p) return;
+  document.getElementById('blog-list-view').style.display = 'none';
+  document.getElementById('blog-post-view').style.display = 'block';
+  document.getElementById('blog-post-content').innerHTML = p.ct;
+  window.scrollTo(0, 0);
+}
+
+function tutupPost() {
+  document.getElementById('blog-list-view').style.display = '';
+  document.getElementById('blog-post-view').style.display = 'none';
+  window.scrollTo(0, 0);
+}
+
+function kirimKontak(e) {
+  e.preventDefault();
+  setTimeout(function() {
+    document.getElementById('form-ok').style.display = 'block';
+    e.target.reset();
+  }, 500);
+}
+
+window.onload = function() {
+  showDoc('pengantar');
+  renderBlog();
+};
+</script>
+</body>
+</html>
